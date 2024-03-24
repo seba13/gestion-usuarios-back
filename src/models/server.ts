@@ -1,24 +1,22 @@
 import express from 'express';
-import { config } from 'dotenv';
+
 import indexRouter from '../routes';
 import pool from '../config/db';
 import { RowDataPacket } from 'mysql2';
 // import { join, dirname } from "path";
 
 // siempre ./ sera referenciado a la raiz del proyecto
-config({ path: './.env' });
 
 export class Server {
   port: string | number;
   app;
 
-  constructor() {
-    this.port = process.env.PORT || '5000';
+  constructor({ port }: { port: string | number }) {
     this.app = express();
-
+    this.port = port;
     this.middlewares();
 
-    pool.query('select 1+1 as sum', (err, fields: RowDataPacket[]) => {
+    pool.query<RowDataPacket[]>('select 1+1 as sum', (err, fields) => {
       console.log('sum:', fields[0].sum);
     });
   }

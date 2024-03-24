@@ -1,5 +1,12 @@
 import Server from './src/models/server';
+import { config } from 'dotenv';
 
-const server: Server = new Server();
+config({ path: './.env' });
+
+const isProduction = process.env.NODE_ENV === 'production' || false;
+
+const server: Server = new Server({
+  port: isProduction ? process.env.PORT! : 80,
+});
 
 server.listen();
