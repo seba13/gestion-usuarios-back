@@ -1,7 +1,8 @@
 import express from 'express';
 import { config } from 'dotenv';
 import indexRouter from '../routes';
-
+import pool from '../config/db';
+import { RowDataPacket } from 'mysql2';
 // import { join, dirname } from "path";
 
 // siempre ./ sera referenciado a la raiz del proyecto
@@ -16,6 +17,10 @@ export class Server {
     this.app = express();
 
     this.middlewares();
+
+    pool.query('select 1+1 as sum', (err, fields: RowDataPacket[]) => {
+      console.log('sum:', fields[0].sum);
+    });
   }
 
   middlewares() {
