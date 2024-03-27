@@ -1,6 +1,6 @@
 import express from 'express';
 
-import indexRouter from '../routes';
+import { test } from '../routes';
 import pool from '../config/db';
 import { RowDataPacket } from 'mysql2';
 // import { join, dirname } from "path";
@@ -22,7 +22,8 @@ export class Server {
   }
 
   middlewares() {
-    this.app.use(indexRouter);
+    // console.log(test);
+    this.app.use(test);
   }
 
   listen() {

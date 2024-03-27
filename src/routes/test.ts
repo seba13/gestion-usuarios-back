@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express';
 
-const personaRouter = Router();
+export const test = Router();
 
-personaRouter.get('/ping', (req: Request, res: Response) => {
+test.get('/test/ping', (req: Request, res: Response) => {
   return res.status(200).json({
     message: 'pong',
   });
 });
 
-export default personaRouter;
+export default test;
