@@ -7,3 +7,4 @@
 // export default indexRouter;
 
 export { test } from './test';
+export { usuarios } from './usuarios.routes';
