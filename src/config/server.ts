@@ -1,7 +1,7 @@
 import express from 'express';
-import { test, usuarios } from '../routes';
-import pool from '../config/db';
-import { RowDataPacket } from 'mysql2';
+import { login, usuarios } from '../routes';
+// import pool from '../config/db';
+// import { RowDataPacket } from 'mysql2';
 // import { join, dirname } from "path";
 
 // siempre ./ sera referenciado a la raiz del proyecto
@@ -23,8 +23,9 @@ export class Server {
   middlewares() {
     // console.log(test);
     // INSCRIPCION DE ROUTERS ACA
-    this.app.use(test);
+    this.app.use(express.json());
     this.app.use(usuarios);
+    this.app.use(login);
   }
 
   listen() {

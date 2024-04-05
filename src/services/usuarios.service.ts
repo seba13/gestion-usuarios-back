@@ -13,7 +13,7 @@ export class UsuariosService {
       //   console.log('Usuarios obtenidos:', usuarios);
       return usuarios;
     } catch (error) {
-      console.error('Error al obtener usuarios:', error);
+      console.error('Error al obtener usuarios.');
       throw error; // Re-lanza el error para que lo maneje el código que llamó a getAll()
     }
   }
@@ -29,7 +29,12 @@ export class UsuariosService {
   }
 
   public async save(user: object): Promise<any> {
+    // console.log('servicio: ', user);
     const result = await this.repository.save(user);
+    return result;
+  }
+  public async update(user: object): Promise<any> {
+    const result = await this.repository.update(user);
     return result;
   }
 }
