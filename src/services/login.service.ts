@@ -1,85 +1,47 @@
-import { UsuarioRepository } from '../repository/usuario.repository';
-import bcrypt from 'bcrypt';
+import { UserRepository } from '../repository/user.repository';
+import { Password } from '../utils/password.util';
+import { IServerResponse } from '../models/serverResponse';
+import { ILoginUser } from '../models';
+import { UsersUtils } from '../utils/users.utils';
+
 export class LoginService {
-  public repository: UsuarioRepository;
+  private repository: UserRepository;
 
   constructor() {
-    this.repository = new UsuarioRepository();
+    this.repository = new UserRepository();
   }
 
   public async verifyUserAndPassword(
-    username: string,
-    password: string
-  ): Promise<any> {
+    user: ILoginUser
+  ): Promise<IServerResponse> {
     try {
-      // 1- BUSCAR USUARIO
-      // 2- BUSCAR CONTRASEÑA DE ESE USUARIO
-      // 3- COMPARAR CONTRASEÑAS
-      // 4- RETORNAR RESPUESTA
+      const userData = await this.repository.getById(user.usuario);
 
-      const user = await this.repository.getById(username);
-      const repositoryPassword = user[0].contrasena;
+      if (!userData[0] || !userData[0].usuario) {
+        return UsersUtils.createResponse(
+          401,
+          'unauthorized',
+          'Acceso denegado, credenciales invalidas.'
+        );
+      }
 
-      // Comparar contraseñas dentro de una promesa
-      const result = await this.decryptPassword(password, repositoryPassword);
+      const isPasswordValid = await Password.comparePasswords(
+        user.contrasena,
+        userData[0].contrasena
+      );
 
-      if (result) {
-        console.log('La contraseña es válida');
-        return {
-          response: {
-            code: 200,
-            status: 'authorized',
-            message: 'Acceso permitido, credenciales válidas.',
-          },
-        };
+      if (isPasswordValid) {
+        return UsersUtils.createResponse(200, 'Authorized', 'Acceso concedido');
       } else {
-        return {
-          response: {
-            code: 401,
-            status: 'unauthorized',
-            message: 'Acceso denegado, credenciales inválidas.',
-          },
-        };
+        return UsersUtils.createResponse(
+          401,
+          'unauthorized',
+          'Acceso denegado.'
+        );
       }
     } catch (error) {
       console.error('Error al verificar usuario y contraseña:', error);
       throw error;
-    }
-  }
-
-  public async hashPassword(password: string): Promise<string> {
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    return hashedPassword;
-  }
-  public async decryptPassword(
-    actualPassword: string,
-    passwordToCompare: string
-  ): Promise<boolean> {
-    try {
-      // Comparar la contraseña proporcionada con la contraseña encriptada en la base de datos
-      const result = await new Promise<boolean>((resolve, reject) => {
-        bcrypt.compare(actualPassword, passwordToCompare, (err, result) => {
-          if (err) {
-            console.error('Error al comparar contraseñas:', err);
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        });
-      });
-
-      if (result) {
-        console.log('La contraseña es válida');
-        return result;
-      } else {
-        console.log('La contraseña es inválida');
-        return false;
-      }
-    } catch (error) {
-      console.error('Error al comparar contraseñas:', error);
-      throw new Error('Error al comparar contraseñas');
     }
   }
 }

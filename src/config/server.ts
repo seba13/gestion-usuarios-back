@@ -1,5 +1,5 @@
 import express from 'express';
-import { login, usuarios } from '../routes';
+import { loginRouter, usersRouter } from '../routes';
 // import pool from '../config/db';
 // import { RowDataPacket } from 'mysql2';
 // import { join, dirname } from "path";
@@ -14,23 +14,17 @@ export class Server {
     this.app = express();
     this.port = port;
     this.middlewares();
-
-    // pool.query<RowDataPacket[]>('select 1+1 as sum', (err, fields) => {
-    //   console.log('sum:', fields[0].sum);
-    // });
   }
 
   middlewares() {
-    // console.log(test);
-    // INSCRIPCION DE ROUTERS ACA
     this.app.use(express.json());
-    this.app.use(usuarios);
-    this.app.use(login);
+    this.app.use(usersRouter);
+    this.app.use(loginRouter);
   }
 
   listen() {
     this.app.listen(this.port, () => {
-      console.log('servidor ejecutandose en puerto', this.port);
+      console.log('servidor ejecutandose en: http://localhost:', this.port);
     });
   }
 }

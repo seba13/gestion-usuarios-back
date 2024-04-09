@@ -7,7 +7,7 @@ pool.getConnection((err, connection) => {
   if (err) {
     console.log(err);
   } else {
-    console.log('conexión establecido con éxito');
+    console.log('conexión establecido con éxito ♥');
     connection.release();
   }
 });

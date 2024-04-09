@@ -1,4 +1,3 @@
-// login.controller.ts
 import { LoginService } from '../services/login.service';
 import { Request, Response } from 'express';
 // import jwt from 'jsonwebtoken';
@@ -24,20 +23,18 @@ export class LoginController {
   //   // }
   // }
 
-  public async login(req: Request, res: Response) {
+  public async login(req: Request, res: Response): Promise<Response> {
     try {
-      const { usuario, contrasena } = req.body;
-      const servicio = new LoginService();
-      const respuesta = await servicio.verifyUserAndPassword(
-        usuario,
-        contrasena
+      const existsUser = await new LoginService().verifyUserAndPassword(
+        req.body
       );
-      return res.status(200).json(respuesta);
+      return res.status(existsUser.response.code).json(existsUser.response);
     } catch (error) {
-      console.error('Error al obtener usuarios:');
-      return res
-        .status(500)
-        .json({ status: 500, message: 'Error al obtener usuarios' });
+      console.error('Error al validar credenciales.', error);
+      return res.status(401).json({
+        status: 401,
+        message: 'Error al validar credenciales de usuarios',
+      });
     }
   }
 }

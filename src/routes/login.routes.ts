@@ -1,14 +1,9 @@
 import { Router } from 'express';
 import { LoginController } from '../controllers/login.controller';
-// import { LoginController } from '../controllers/login.controller';
-// import { authenticateToken } from '../middlewares/auth.middleware';
 
-export const login = Router();
-// const authController = new AuthController();
-const loginController = new LoginController();
+export const loginRouter = Router();
+const controller = new LoginController();
 
-// auth.get('/protected', authenticateToken, authController.protectedRoute);
-// login.post('/login1', authController.login);
-login.post('/login', loginController.login);
+loginRouter.post('/login', controller.login);
 
-export default login;
+export default loginRouter;
