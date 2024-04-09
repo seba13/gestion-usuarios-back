@@ -1,6 +1,4 @@
-import { ResultSetHeader } from 'mysql2';
-
-export interface ILoginUser extends ResultSetHder {
+export interface ILoginUser {
   usuario: string;
   contrasena: string;
 }
