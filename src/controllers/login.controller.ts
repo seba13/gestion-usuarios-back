@@ -1,7 +1,7 @@
 import { LoginService } from '../services/login.service';
 import { Request, Response } from 'express';
+import { IpUtils } from '../utils/';
 // import jwt from 'jsonwebtoken';
-
 export class LoginController {
   // public test(req: Request, res: Response) {
   //   // const { username, password } = req.body;
@@ -25,9 +25,9 @@ export class LoginController {
 
   public async login(req: Request, res: Response): Promise<Response> {
     try {
-      const existsUser = await new LoginService().verifyUserAndPassword(
-        req.body
-      );
+      const { usuario, contrasena } = req.body;
+      const user = { usuario, contrasena, ip: IpUtils.getIp(req) };
+      const existsUser = await new LoginService().verifyUserAndPassword(user);
       return res.status(existsUser.response.code).json(existsUser.response);
     } catch (error) {
       console.error('Error al validar credenciales.', error);

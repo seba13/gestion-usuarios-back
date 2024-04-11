@@ -1,6 +1,6 @@
 import { UserRepository } from '../repository/user.repository';
 import { IUser, ILoginUser, IServerResponse } from '../models';
-import { UsersUtils } from '../utils/users.utils';
+import { UsersUtils } from '../utils/';
 
 export class UsersService {
   public repository: UserRepository;

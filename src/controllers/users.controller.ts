@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { UsersService } from '../services/users.service';
-import { UsersUtils } from '../utils/users.utils';
+import { UsersUtils } from '../utils/';
 import { IServerResponse } from '../models/serverResponse';
 import { ILoginUser, IUser } from '../models';
 export class UsersControllers {

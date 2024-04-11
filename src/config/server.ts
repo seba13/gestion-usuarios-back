@@ -17,6 +17,7 @@ export class Server {
   }
 
   middlewares() {
+    this.app.set('trust proxy', true);
     this.app.use(express.json());
     this.app.use(usersRouter);
     this.app.use(loginRouter);

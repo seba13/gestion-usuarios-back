@@ -1,8 +1,8 @@
 import { UserRepository } from '../repository/user.repository';
-import { Password } from '../utils/password.util';
+import { Password } from '../utils/';
 import { IServerResponse } from '../models/serverResponse';
 import { ILoginUser } from '../models';
-import { UsersUtils } from '../utils/users.utils';
+import { UsersUtils } from '../utils/';
 
 export class LoginService {
   private repository: UserRepository;
@@ -14,6 +14,7 @@ export class LoginService {
   public async verifyUserAndPassword(
     user: ILoginUser
   ): Promise<IServerResponse> {
+    console.log(user.ip);
     try {
       const userData = await this.repository.getById(user.usuario);
 
