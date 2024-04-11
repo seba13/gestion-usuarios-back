@@ -1,6 +1,6 @@
 import { ILoginUser, IServerResponse, IUser } from '../models';
 import { v4 as uuid } from 'uuid';
-import { Password } from './password.util';
+import { Password } from './index';
 export class UsersUtils {
   public static createResponse(
     code: number,
