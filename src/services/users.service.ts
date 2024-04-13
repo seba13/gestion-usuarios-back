@@ -1,64 +1,48 @@
 import { UserRepository } from '../repository/user.repository';
-import { IUser, ILoginUser, IServerResponse } from '../models';
-import { UsersUtils } from '../utils/';
+import { IUser, ILoginUser, IResponse } from '../models';
+import { ServerResponse } from '../utils/';
+import { ResultSetHeader } from 'mysql2';
 
 export class UsersService {
-  public repository: UserRepository;
+  private repository: UserRepository;
 
-  constructor() {
-    this.repository = new UserRepository();
+  constructor(repository: UserRepository = new UserRepository()) {
+    this.repository = repository;
   }
 
-  public async getAll(): Promise<IServerResponse> {
-    try {
-      const users = await this.repository.getAll();
-      if (!users.length) {
-        return UsersUtils.createResponse(
-          404,
-          'not found',
-          'Usuarios no encontrados'
-        );
-      }
-      return UsersUtils.createResponse(200, 'success', users);
-    } catch (error) {
-      console.error('Error al obtener usuarios:', error);
-      throw error;
+  public async getAll(): Promise<IResponse> {
+    const users: IUser[] = await this.repository.getAll();
+    if (!users.length) {
+      return ServerResponse.NotFound();
+    } else {
+      return ServerResponse.Ok(users);
     }
   }
 
-  public async getById(username: string): Promise<IServerResponse> {
+  public async getById(username: string): Promise<IResponse> {
     try {
-      const user = await this.repository.getById(username);
+      const user: IUser[] = await this.repository.getById(username);
 
       if (!user.length) {
-        return UsersUtils.createResponse(
-          404,
-          'not found',
-          'Usuario no encontrado'
-        );
+        return ServerResponse.NotFound('Usuario no encontrado');
       }
-      return UsersUtils.createResponse(200, 'success', user);
+      return ServerResponse.Ok(user);
     } catch (error) {
       console.error('Error al obtener usuario:', error);
-      throw error;
+      return ServerResponse.ErrorInternalServer('Error al buscar usuario');
     }
   }
 
-  public async save(user: IUser): Promise<IServerResponse> {
-    const resultSave = await this.repository.save(user);
-    return UsersUtils.createResponse(200, 'success', resultSave);
+  public async save(user: IUser): Promise<IResponse> {
+    const resultSave: ResultSetHeader = await this.repository.save(user);
+    return ServerResponse.Ok(resultSave);
   }
 
-  public async update(user: ILoginUser): Promise<IServerResponse> {
-    const resultUpdate = await this.repository.update(user);
-
-    const code = resultUpdate.affectedRows == 0 ? 204 : 200;
-    const message =
-      resultUpdate.affectedRows == 0
-        ? 'No se realizaron cambios.'
-        : 'Cambios realizados.';
-    const status = resultUpdate.affectedRows == 0 ? 'denied' : 'success';
-
-    return UsersUtils.createResponse(code, status, message);
+  public async update(user: ILoginUser): Promise<IResponse> {
+    const resultUpdate: ResultSetHeader = await this.repository.update(user);
+    if (resultUpdate.affectedRows === 0) {
+      return ServerResponse.Error('Error al actualizar datos');
+    }
+    return ServerResponse.Ok('Cambios realizados');
   }
 }

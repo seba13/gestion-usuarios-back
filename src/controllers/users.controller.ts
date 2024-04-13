@@ -1,38 +1,29 @@
 import { Request, Response } from 'express';
-import { UsersService } from '../services/users.service';
+import { UsersService } from '../services';
 import { UsersUtils } from '../utils/';
-import { IServerResponse } from '../models/serverResponse';
-import { ILoginUser, IUser } from '../models';
-export class UsersControllers {
+import { ILoginUser, IUser, IResponse, HttpStatus } from '../models';
+export class UsersController {
   constructor() {}
 
   public async getAll(req: Request, res: Response): Promise<Response> {
     try {
-      const response: IServerResponse = await new UsersService().getAll();
-      return res.status(response.response.code).json(response.response);
+      const serviceResponse = await new UsersService().getAll();
+      return res.status(serviceResponse.code).json(serviceResponse);
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
-      return res.status(500).json({
-        code: 500,
-        status: 'error',
-        message: 'Error interno del servidor al obtener usuarios.',
-      });
+      return res.status(HttpStatus.ERROR).send('Error al obtener usuarios:');
     }
   }
 
   public async getById(req: Request, res: Response): Promise<Response> {
     try {
-      const response: IServerResponse = await new UsersService().getById(
+      const response: IResponse = await new UsersService().getById(
         req.params.usuario
       );
-      return res.status(response.response.code).json(response.response);
+      return res.status(response.code).json(response);
     } catch (error) {
       console.error('Error al obtener usuario:', error);
-      return res.status(500).json({
-        code: 500,
-        status: 'error',
-        message: 'Error interno del servidor al obtener usuario.',
-      });
+      return res.status(HttpStatus.ERROR).send('Error al buscar usuario');
     }
   }
 
@@ -43,15 +34,11 @@ export class UsersControllers {
         usuario,
         contrasena,
       });
-      const response: IServerResponse = await new UsersService().save(newUser);
-      return res.status(response.response.code).json(response.response);
+      const response: IResponse = await new UsersService().save(newUser);
+      return res.status(response.code).json(response);
     } catch (error) {
-      console.error('Error al registrar el usuario:', error);
-      return res.status(400).json({
-        code: 400,
-        status: 'error',
-        message: 'Error, usuario ya existe.',
-      });
+      console.error('Error al crear usuario:', error);
+      return res.status(HttpStatus.ERROR).send('Error al crear usuario.');
     }
   }
 
@@ -62,17 +49,11 @@ export class UsersControllers {
         usuario,
         contrasena,
       });
-      const response: IServerResponse = await new UsersService().update(
-        newUser
-      );
-      return res.status(response.response.code).json(response.response);
+      const response: IResponse = await new UsersService().update(newUser);
+      return res.status(response.code).json(response);
     } catch (error) {
-      console.error('Error al actualizar el usuario:', error);
-      return res.status(400).json({
-        code: 400,
-        status: 'error',
-        message: 'Error al actualizar usuario.',
-      });
+      console.error('Error al actualizar usuario:', error);
+      return res.status(HttpStatus.ERROR).send('Error al actualizar datos.');
     }
   }
 }

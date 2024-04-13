@@ -1,7 +1,7 @@
-export interface IServerResponse {
-  response: {
-    code: number;
-    status: string;
-    message?: string | object;
-  };
+import { HttpStatus } from './httpStatus';
+
+export interface IResponse {
+  code: HttpStatus;
+  status: string;
+  body: any;
 }

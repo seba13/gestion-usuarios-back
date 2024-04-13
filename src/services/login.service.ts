@@ -1,27 +1,21 @@
 import { UserRepository } from '../repository/user.repository';
-import { Password } from '../utils/';
-import { IServerResponse } from '../models/serverResponse';
-import { ILoginUser } from '../models';
-import { UsersUtils } from '../utils/';
+import { Password, ServerResponse } from '../utils/';
+import { ILoginUser, IResponse } from '../models';
 
 export class LoginService {
   private repository: UserRepository;
 
-  constructor() {
-    this.repository = new UserRepository();
+  constructor(repository: UserRepository = new UserRepository()) {
+    this.repository = repository;
   }
 
-  public async verifyUserAndPassword(
-    user: ILoginUser
-  ): Promise<IServerResponse> {
+  public async verifyUserAndPassword(user: ILoginUser): Promise<IResponse> {
     console.log(user.ip);
     try {
       const userData = await this.repository.getById(user.usuario);
 
       if (!userData[0] || !userData[0].usuario) {
-        return UsersUtils.createResponse(
-          401,
-          'unauthorized',
+        return ServerResponse.Unauthorized(
           'Acceso denegado, credenciales invalidas.'
         );
       }
@@ -32,17 +26,13 @@ export class LoginService {
       );
 
       if (isPasswordValid) {
-        return UsersUtils.createResponse(200, 'Authorized', 'Acceso concedido');
+        return ServerResponse.Ok('Acceso concedido');
       } else {
-        return UsersUtils.createResponse(
-          401,
-          'unauthorized',
-          'Acceso denegado.'
-        );
+        return ServerResponse.Unauthorized('Acceso denegado.');
       }
     } catch (error) {
-      console.error('Error al verificar usuario y contraseña:', error);
-      throw error;
+      console.error('Error al comprobar usuario y contraseña:', error);
+      return ServerResponse.Error('Error al comprobar usuario y contraseña');
     }
   }
 }

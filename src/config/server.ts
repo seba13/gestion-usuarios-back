@@ -1,11 +1,5 @@
 import express from 'express';
-import { loginRouter, usersRouter } from '../routes';
-// import pool from '../config/db';
-// import { RowDataPacket } from 'mysql2';
-// import { join, dirname } from "path";
-
-// siempre ./ sera referenciado a la raiz del proyecto
-
+import { loginRouter, usersRouter, personsRouter } from '../routes';
 export class Server {
   port: string | number;
   app;
@@ -20,6 +14,7 @@ export class Server {
     this.app.set('trust proxy', true);
     this.app.use(express.json());
     this.app.use(usersRouter);
+    this.app.use(personsRouter);
     this.app.use(loginRouter);
   }
 

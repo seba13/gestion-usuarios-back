@@ -1,29 +1,32 @@
-// auth.middleware.ts
-
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-export const authenticateToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+export class AuthMiddleware {
+  private static secretKey = '12345';
 
-  if (!token) {
-    return res
-      .status(401)
-      .json({ message: 'Token de autenticación no proporcionado' });
+  public static generateToken(payload: any): string {
+    const token = jwt.sign(payload, AuthMiddleware.secretKey);
+    console.log('TOKEN GENERADO: ', token);
+    return token;
   }
 
-  jwt.verify(token, 'secreto', (err: any, user: any) => {
-    if (err) {
-      return res
-        .status(403)
-        .json({ message: 'Token de autenticación inválido' });
+  public static verifyToken(
+    req: Request | any,
+    res: Response,
+    next: NextFunction
+  ): any {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ message: 'Token not provided' });
     }
-    req.user = user;
-    next();
-  });
-};
+
+    try {
+      const decoded = jwt.verify(token, AuthMiddleware.secretKey);
+      req.user = decoded;
+      next();
+    } catch (error) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+  }
+}

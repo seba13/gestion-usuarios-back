@@ -1,20 +1,7 @@
-import { ILoginUser, IServerResponse, IUser } from '../models';
+import { ILoginUser, IUser } from '../models';
 import { v4 as uuid } from 'uuid';
 import { Password } from './index';
 export class UsersUtils {
-  public static createResponse(
-    code: number,
-    status: string,
-    message?: string | object
-  ): IServerResponse {
-    return {
-      response: {
-        code: code,
-        status: status,
-        message: message,
-      },
-    };
-  }
   public static async generateNewUser(user: ILoginUser): Promise<IUser> {
     const newHashedPassword = await Password.hashPassword(user.contrasena);
 
