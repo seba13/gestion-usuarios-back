@@ -1,5 +1,5 @@
 import express from 'express';
-import { loginRouter, usersRouter, personsRouter } from '../routes';
+import { authRouter, usersRouter, personsRouter } from '../routes';
 export class Server {
   port: string | number;
   app;
@@ -15,7 +15,7 @@ export class Server {
     this.app.use(express.json());
     this.app.use(usersRouter);
     this.app.use(personsRouter);
-    this.app.use(loginRouter);
+    this.app.use(authRouter);
   }
 
   listen() {

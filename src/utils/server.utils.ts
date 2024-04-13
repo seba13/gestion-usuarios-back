@@ -1,7 +1,12 @@
 import { HttpStatus, IResponse } from '../models';
+import jwt from 'jsonwebtoken';
 export class ServerResponse {
-  public static Send(res: any, code: any, body: any) {
-    return res.status(code).json(body);
+  public static generateToken(
+    payload: any,
+    secretKey: string = '12345'
+  ): string {
+    const token = jwt.sign(payload, secretKey);
+    return token;
   }
 
   public static Ok(data?: any): IResponse {
