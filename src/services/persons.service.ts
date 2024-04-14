@@ -1,24 +1,62 @@
 import { PersonsRepository } from '../repository/persons.repository';
-import { IResponse, IPersons } from '../models';
+import { IResponse, IPerson } from '../models';
 import { ServerResponse } from '../utils';
+import { ResultSetHeader } from 'mysql2';
 
 export class PersonsService {
   private repository: PersonsRepository;
 
-  constructor() {
-    this.repository = new PersonsRepository()!;
+  constructor(repository: PersonsRepository = new PersonsRepository()) {
+    this.repository = repository;
   }
 
   public async getAll(): Promise<IResponse> {
     try {
-      const persons: IPersons[] = await this.repository.getAll();
+      const persons: IPerson[] = await this.repository.getAll();
       if (!persons.length) {
-        return ServerResponse.NotFound('Personas no encontrados');
+        return ServerResponse.NotFound('No se encuentran datos.');
       }
       return ServerResponse.Ok(persons);
     } catch (error) {
-      console.error('Error al obtener Personas:', error);
-      return ServerResponse.Error('Error al buscar datos');
+      console.error('Error al obtener datos:', error);
+      return ServerResponse.Error('Error al buscar datos.');
     }
+  }
+
+  public async getById(name: string): Promise<IResponse> {
+    try {
+      const person: IPerson[] = await this.repository.getById(name);
+
+      if (person.length === 0 || person.length < 1) {
+        return ServerResponse.NotFound('datos no encontrados');
+      }
+      return ServerResponse.Ok(person);
+    } catch (error) {
+      console.error('Error servicio:', error);
+      return ServerResponse.ErrorInternalServer('Error al buscar datos');
+    }
+  }
+  public async save(newPerson: IPerson): Promise<IResponse> {
+    //procesar logica aca
+    try {
+      const resultSave: ResultSetHeader = await this.repository.save(newPerson);
+      if (!resultSave) {
+        return ServerResponse.Error('Error al insertar datos.');
+      }
+      return ServerResponse.Created();
+    } catch (error) {
+      // console.log(error);
+      return ServerResponse.Error('Error al insertar datos.');
+    }
+  }
+
+  public async update(newPersonInfo: IPerson): Promise<IResponse> {
+    console.log(newPersonInfo);
+    const resultUpdate: ResultSetHeader =
+      await this.repository.update(newPersonInfo);
+    if (resultUpdate.affectedRows === 0 || resultUpdate.affectedRows < 1) {
+      return ServerResponse.Error('Error al actualizar datos');
+    }
+    return ServerResponse.Ok('Cambios realizados');
   }
 }

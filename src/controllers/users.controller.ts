@@ -10,8 +10,8 @@ export class UsersController {
       const serviceResponse = await new UsersService().getAll();
       return res.status(serviceResponse.code).json(serviceResponse);
     } catch (error) {
-      console.error('Error al obtener usuarios:', error);
-      return res.status(HttpStatus.ERROR).send('Error al obtener usuarios:');
+      console.error('Error al obtener datos:', error);
+      return res.status(HttpStatus.ERROR).send('Error al obtener datos:');
     }
   }
 
@@ -23,7 +23,7 @@ export class UsersController {
       return res.status(response.code).json(response);
     } catch (error) {
       console.error('Error al obtener usuario:', error);
-      return res.status(HttpStatus.ERROR).send('Error al buscar usuario');
+      return res.status(HttpStatus.ERROR).send('Error al buscar datos');
     }
   }
 
@@ -38,7 +38,7 @@ export class UsersController {
       return res.status(response.code).json(response);
     } catch (error) {
       console.error('Error al crear usuario:', error);
-      return res.status(HttpStatus.ERROR).send('Error al crear usuario.');
+      return res.status(HttpStatus.ERROR).send('Error al insertar datos.');
     }
   }
 

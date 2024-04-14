@@ -1,5 +1,5 @@
-export interface IPersons {
-  idPersona: string;
+export interface IPerson {
+  idPersona?: string;
   nombre: string;
   apat: string;
   amat: string;

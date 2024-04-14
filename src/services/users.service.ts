@@ -13,7 +13,7 @@ export class UsersService {
   public async getAll(): Promise<IResponse> {
     const users: IUser[] = await this.repository.getAll();
     if (!users.length) {
-      return ServerResponse.NotFound();
+      return ServerResponse.NotFound('No se encuentran datos.');
     } else {
       return ServerResponse.Ok(users);
     }
@@ -24,12 +24,12 @@ export class UsersService {
       const user: IUser[] = await this.repository.getById(username);
 
       if (!user.length) {
-        return ServerResponse.NotFound('Usuario no encontrado');
+        return ServerResponse.NotFound('datos no encontrados');
       }
       return ServerResponse.Ok(user);
     } catch (error) {
       console.error('Error al obtener usuario:', error);
-      return ServerResponse.ErrorInternalServer('Error al buscar usuario');
+      return ServerResponse.ErrorInternalServer('Error al buscar datos');
     }
   }
 
