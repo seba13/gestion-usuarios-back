@@ -14,13 +14,8 @@ export class UsersUtils {
     };
     return newUser as IUser;
   }
-  public static async updateUser(user: ILoginUser): Promise<ILoginUser> {
-    const newHashedPassword = await Password.hashPassword(user.contrasena);
-
-    const newUser: ILoginUser = {
-      usuario: user.usuario,
-      contrasena: newHashedPassword,
-    };
-    return newUser as ILoginUser;
+  public static async updatePassword(newPassword: string): Promise<string> {
+    const newHashedPassword = await Password.hashPassword(newPassword);
+    return newHashedPassword;
   }
 }

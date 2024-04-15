@@ -13,56 +13,56 @@ export class ServerResponse {
     return {
       code: HttpStatus.OK,
       status: 'Success',
-      body: data,
+      message: data,
     };
   }
   public static Error(data?: any): IResponse {
     return {
       code: HttpStatus.ERROR,
       status: 'Error',
-      body: data,
+      message: data,
     };
   }
   public static ErrorInternalServer(data?: any): IResponse {
     return {
       code: HttpStatus.ERROR_INTERNAL,
       status: 'Internal server error',
-      body: data,
+      message: data,
     };
   }
   public static Forbidden(data?: any): IResponse {
     return {
       code: HttpStatus.FORBIDDEN,
       status: 'Forbidden',
-      body: data,
+      message: data,
     };
   }
   public static NotFound(data?: any): IResponse {
     return {
       code: HttpStatus.NOT_FOUND,
       status: 'Not found',
-      body: data,
+      message: data,
     };
   }
   public static Unauthorized(data?: any): IResponse {
     return {
       code: HttpStatus.UNAUTHORIZED,
       status: 'Unauthorized',
-      body: data,
+      message: data,
     };
   }
   public static Created(data?: any): IResponse {
     return {
       code: HttpStatus.CREATED,
       status: 'Created',
-      body: data,
+      message: data,
     };
   }
   public static NoContent(data?: any): IResponse {
     return {
       code: HttpStatus.NO_CONTENT,
       status: 'No content',
-      body: data,
+      message: data,
     };
   }
 }

@@ -1,5 +1,5 @@
 import { UserRepository } from '../repository/user.repository';
-import { IUser, ILoginUser, IResponse } from '../models';
+import { IUser, IResponse } from '../models';
 import { ServerResponse } from '../utils/';
 import { ResultSetHeader } from 'mysql2';
 
@@ -38,8 +38,11 @@ export class UsersService {
     return ServerResponse.Ok(resultSave);
   }
 
-  public async update(user: ILoginUser): Promise<IResponse> {
-    const resultUpdate: ResultSetHeader = await this.repository.update(user);
+  public async update(idUser: string, newPassword: string): Promise<IResponse> {
+    const resultUpdate: ResultSetHeader = await this.repository.update(
+      idUser,
+      newPassword
+    );
     if (resultUpdate.affectedRows === 0) {
       return ServerResponse.Error('Error al actualizar datos');
     }

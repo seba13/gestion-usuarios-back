@@ -1,6 +1,6 @@
 import { ResultSetHeader } from 'mysql2';
 import pool from '../config/db';
-import { IUser, ILoginUser } from '../models';
+import { IUser } from '../models';
 
 export class UserRepository {
   private promise;
@@ -34,10 +34,13 @@ export class UserRepository {
     // console.log(row);
     return row as ResultSetHeader;
   }
-  public async update(user: ILoginUser): Promise<ResultSetHeader> {
+  public async update(
+    newPassword: string,
+    idUser: string
+  ): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
-      'UPDATE usuarios SET contrasena=? WHERE usuario=?',
-      [user.contrasena, user.usuario]
+      'UPDATE usuarios SET contrasena=? WHERE id_usuario=?',
+      [newPassword, idUser]
     ); //field is optional
     return row as ResultSetHeader;
   }

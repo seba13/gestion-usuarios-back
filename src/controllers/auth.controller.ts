@@ -13,7 +13,7 @@ export class AuthController {
         userCredentials
       );
       // console.log(existsUser.body.token);
-      res.set('Authorization', `Bearer ${existsUser.body.token}`);
+      res.set('Authorization', `Bearer ${existsUser.message.token}`);
       return res.status(existsUser.code).json(existsUser);
     } catch (error) {
       console.error('ERROR: ', error);

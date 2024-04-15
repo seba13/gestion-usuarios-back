@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UsersService } from '../services';
 import { UsersUtils } from '../utils/';
-import { ILoginUser, IUser, IResponse, HttpStatus } from '../models';
+import { IUser, IResponse, HttpStatus } from '../models';
 export class UsersController {
   constructor() {}
 
@@ -18,7 +18,7 @@ export class UsersController {
   public async getById(req: Request, res: Response): Promise<Response> {
     try {
       const response: IResponse = await new UsersService().getById(
-        req.params.usuario
+        req.params.idUsuario
       );
       return res.status(response.code).json(response);
     } catch (error) {
@@ -44,12 +44,13 @@ export class UsersController {
 
   public async update(req: Request, res: Response): Promise<Response> {
     try {
-      const { usuario, contrasena } = req.body;
-      const newUser: ILoginUser = await UsersUtils.updateUser({
-        usuario,
-        contrasena,
-      });
-      const response: IResponse = await new UsersService().update(newUser);
+      const { idUsuario } = req.params;
+      const { contrasena } = req.body;
+      const newPassword = await UsersUtils.updatePassword(contrasena);
+      const response: IResponse = await new UsersService().update(
+        idUsuario,
+        newPassword
+      );
       return res.status(response.code).json(response);
     } catch (error) {
       console.error('Error al actualizar usuario:', error);

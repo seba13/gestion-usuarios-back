@@ -1,5 +1,10 @@
 import express from 'express';
-import { authRouter, usersRouter, personsRouter } from '../routes';
+import {
+  authRouter,
+  usersRouter,
+  personsRouter,
+  employeeRouter,
+} from '../routes';
 export class Server {
   port: string | number;
   app;
@@ -14,6 +19,7 @@ export class Server {
     this.app.set('trust proxy', true);
     this.app.use(express.json());
     this.app.use(usersRouter);
+    this.app.use(employeeRouter);
     this.app.use(personsRouter);
     this.app.use(authRouter);
   }
