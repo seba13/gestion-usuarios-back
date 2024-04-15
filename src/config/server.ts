@@ -1,8 +1,11 @@
 import express from 'express';
 import { authRouter, usersRouter, personsRouter } from '../routes';
+
+import cors from 'cors';
+
 export class Server {
   port: string | number;
-  app;
+  app: express.Application;
 
   constructor({ port }: { port: string | number }) {
     this.app = express();
@@ -12,6 +15,7 @@ export class Server {
 
   middlewares() {
     this.app.set('trust proxy', true);
+    this.app.use(cors());
     this.app.use(express.json());
     this.app.use(usersRouter);
     this.app.use(personsRouter);
