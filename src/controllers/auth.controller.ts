@@ -13,7 +13,14 @@ export class AuthController {
         userCredentials
       );
       // console.log(existsUser.body.token);
-      res.set('Authorization', `Bearer ${existsUser.message.token}`);
+      // res.set('Authorization', `Bearer ${existsUser.message.token}`);
+      res.cookie('token', existsUser.message.token, {
+        maxAge: 900000, // Tiempo de vida de la cookie en milisegundos (aquí, 15 minutos)
+        httpOnly: true, // La cookie solo es accesible en el servidor
+        secure: false, // La cookie solo se envía a través de conexiones HTTPS
+      });
+      console.log('COOKIE CREADA.');
+      // Enviar una respuesta al cliente
       return res.status(existsUser.code).json(existsUser);
     } catch (error) {
       console.error('ERROR: ', error);

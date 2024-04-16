@@ -5,8 +5,8 @@ import {
   personsRouter,
   employeeRouter,
 } from '../routes';
-
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 export class Server {
   port: string | number;
@@ -20,6 +20,7 @@ export class Server {
 
   middlewares() {
     this.app.set('trust proxy', true);
+    this.app.use(cookieParser());
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(usersRouter);

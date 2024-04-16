@@ -38,13 +38,15 @@ export class UsersService {
     return ServerResponse.Ok(resultSave);
   }
 
-  public async update(idUser: string, newPassword: string): Promise<IResponse> {
+  public async update(user: string, newPassword: string): Promise<IResponse> {
     const resultUpdate: ResultSetHeader = await this.repository.update(
-      idUser,
+      user,
       newPassword
     );
+    console.log(user);
+    console.log(newPassword);
     if (resultUpdate.affectedRows === 0) {
-      return ServerResponse.Error('Error al actualizar datos');
+      return ServerResponse.Error('No se efectuaron cambios.');
     }
     return ServerResponse.Ok('Cambios realizados');
   }

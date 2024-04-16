@@ -44,11 +44,10 @@ export class UsersController {
 
   public async update(req: Request, res: Response): Promise<Response> {
     try {
-      const { idUsuario } = req.params;
-      const { contrasena } = req.body;
+      const { usuario, contrasena } = req.body;
       const newPassword = await UsersUtils.updatePassword(contrasena);
       const response: IResponse = await new UsersService().update(
-        idUsuario,
+        usuario,
         newPassword
       );
       return res.status(response.code).json(response);

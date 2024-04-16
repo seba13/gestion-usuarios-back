@@ -35,12 +35,12 @@ export class UserRepository {
     return row as ResultSetHeader;
   }
   public async update(
-    newPassword: string,
-    idUser: string
+    username: string,
+    newPassword: string
   ): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
-      'UPDATE usuarios SET contrasena=? WHERE id_usuario=?',
-      [newPassword, idUser]
+      'UPDATE usuarios SET contrasena=? WHERE usuario=?',
+      [newPassword, username]
     ); //field is optional
     return row as ResultSetHeader;
   }
