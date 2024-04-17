@@ -10,9 +10,9 @@ export class PersonsRepository {
   }
   public async getAll(): Promise<IPerson[]> {
     const [row] = await this.promise
-      .query(`select per.id_persona, em.id_empleado, per.nombre, per.apat as paterno, per.amat as materno, per.fec_nac as fecnac, per.rut as rut, per.dv as dv, 
-    per.sexo,detalles.ecv as 'estado civil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
-    detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso, em.fec_despido, est.estado 
+      .query(`select per.id_persona as idPersona, em.id_empleado as idEmpleado, per.nombre, per.apat as paterno, per.amat as materno, per.fec_nac as fecnac, per.rut as rut, per.dv as dv, 
+    per.sexo,detalles.ecv as 'estadoCivil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
+    detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
     from personas per
     left join personas_detalles dp on dp.id_persona=per.id_persona
     left join empleados em on em.id_persona=per.id_persona
@@ -24,9 +24,9 @@ export class PersonsRepository {
   }
   public async getById(idPerson: string): Promise<IPerson[]> {
     const [row] = await this.promise.query(
-      `select em.id_empleado, per.nombre, per.apat as paterno, per.amat as materno, per.fec_nac as fecnac, per.rut as rut, per.dv as dv, 
-      per.sexo,detalles.ecv as 'estado civil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
-      detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso, em.fec_despido, est.estado 
+      `select em.id_empleado as idEmpleado, per.nombre, per.apat as paterno, per.amat as materno, per.fec_nac as fecnac, per.rut as rut, per.dv as dv, 
+      per.sexo,detalles.ecv as 'estadoCivil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
+      detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
       from personas per
       left join personas_detalles dp on dp.id_persona=per.id_persona
       left join empleados em on em.id_persona=per.id_persona
