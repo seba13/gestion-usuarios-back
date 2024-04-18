@@ -20,7 +20,7 @@ export class UserRepository {
   }
   public async getById(username: string): Promise<IUser[]> {
     const [row] = await this.promise.query(
-      'SELECT * FROM usuarios where usuario = ?',
+      'SELECT id_usuario as idUsuario, usuario, contrasena, activo, rol ,fec_creacion as fecCreacion, ultimo_acceso as ultimoAcceso FROM usuarios where usuario = ?',
       [username]
     ); //field is optional
     return row as IUser[];
