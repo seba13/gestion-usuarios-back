@@ -10,8 +10,17 @@ export class EmployeeRepository {
   }
   public async getAll(): Promise<IEmployee[]> {
     const [row] = await this.promise
-      .query(`select em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecnac, p.rut as rut, p.dv as dv, 
-    p.sexo,detalles.ecv as 'estadoCivil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
+      .query(`select CONCAT(p.rut,'-',p.dv) as rut,
+      if(
+          p.sexo = 'm', 'Masculino', 'Femenino'
+      ) as sexo,
+      CASE
+          WHEN detalles.ecv="c" THEN 'Casad@'
+          WHEN detalles.ecv="s" THEN 'Solter@'
+          WHEN detalles.ecv="d" THEN 'Divorciad@'
+          WHEN detalles.ecv="v" THEN 'Viud@'
+          ELSE 'Soltero'
+      END AS estadoCivil, em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
     detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
     from personas_detalles pd
     join personas p on p.id_persona=pd.id_persona
