@@ -4,9 +4,9 @@ export class EmployeeUtils {
   public static generateNewEmployee(body: any): IEmployee {
     const {
       nombre,
-      apat,
-      amat,
-      fecnac,
+      paterno,
+      materno,
+      fecNac,
       rut,
       dv,
       sexo,
@@ -22,9 +22,9 @@ export class EmployeeUtils {
     const newEmployee: IEmployee = {
       idEmpleado: uuid(),
       nombre,
-      apat,
-      amat,
-      fecnac,
+      paterno,
+      materno,
+      fecNac,
       rut,
       dv,
       sexo,

@@ -29,14 +29,11 @@ export class EmployeeService {
       return ServerResponse.ErrorInternalServer('Error al buscar datos');
     }
   }
-  public async save(body: object): Promise<IResponse> {
+  public async save(body: any): Promise<IResponse> {
     try {
       const newEmployee: IEmployee = EmployeeUtils.generateNewEmployee(body);
       const newPerson: IPerson = PersonsUtils.generateNewPerson(newEmployee);
       const resultSave = await this.repository.save(newEmployee, newPerson);
-      //procesar respuesta
-      console.log('RESULTADO:');
-      console.log(resultSave);
       // Procesar respuesta
       if (resultSave.affectedRows) {
         return ServerResponse.Error('No se creo el registro');

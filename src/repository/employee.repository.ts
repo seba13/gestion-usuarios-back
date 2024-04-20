@@ -9,10 +9,16 @@ export class EmployeeRepository {
     this.promise = pool.promise();
   }
   public async getAll(): Promise<IEmployee[]> {
-    const [row] = await this.promise
-      .query(`select CONCAT(p.rut,'-',p.dv) as rut,
+    const [row] = await this.promise.query(`select
+      per.id_persona as idPersona,
+      em.id_empleado as idEmpleado,
+      per.nombre,
+      per.apat as paterno,
+      per.amat as materno,
+      per.fec_nac as fecNac,
+      CONCAT(per.rut,'-',per.dv) as rut,
       if(
-          p.sexo = 'm', 'Masculino', 'Femenino'
+          per.sexo = 'm', 'Masculino', 'Femenino'
       ) as sexo,
       CASE
           WHEN detalles.ecv="c" THEN 'Casad@'
@@ -20,15 +26,25 @@ export class EmployeeRepository {
           WHEN detalles.ecv="d" THEN 'Divorciad@'
           WHEN detalles.ecv="v" THEN 'Viud@'
           ELSE 'Soltero'
-      END AS estadoCivil, em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
-    detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
-    from personas_detalles pd
-    join personas p on p.id_persona=pd.id_persona
-    join empleados em on em.id_persona=pd.id_persona
-    join estados est on est.id_estado=em.estado_empleado
-    join detalles on detalles.id_detalle=pd.id_detalle
-    join regiones reg on reg.region_id=detalles.region
-    join comunas com on com.comuna_id=detalles.comuna`); //field is optional
+      END AS estadoCivil,
+      detalles.correo,
+      detalles.calle,
+      detalles.numero,
+      detalles.telefono,
+      detalles.profesion,
+      reg.region_nombre as region,
+      com.comuna_nombre as comuna,
+      em.fec_ingreso as fecIngreso,
+      em.fec_despido as fecDespido,
+      est.estado
+  from
+      personas per
+       join personas_detalles dp on dp.id_persona = per.id_persona
+       join empleados em on em.id_persona = per.id_persona
+       join detalles on detalles.id_detalle = dp.id_detalle
+       join regiones reg on reg.region_id = detalles.region
+      join comunas com on com.comuna_id = detalles.comuna
+      join estados est on est.id_estado = em.estado_empleado;`); //field is optional
     return row as IEmployee[];
   }
   public async getById(idEmployee: string): Promise<IEmployee[]> {
@@ -59,9 +75,9 @@ export class EmployeeRepository {
         newPerson.rut,
         newPerson.idPersona,
         newPerson.nombre,
-        newPerson.apat,
-        newPerson.amat,
-        newPerson.fecnac,
+        newPerson.paterno,
+        newPerson.materno,
+        newPerson.fecNac,
         newPerson.dv,
         newPerson.sexo,
         newEmployee.estadoCivil,
