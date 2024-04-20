@@ -32,7 +32,7 @@ export class AuthService {
         }
         return ServerResponse.Ok('Autenticacion correcta');
       }
-      return ServerResponse.Ok('Autenticacion incorrecta');
+      return ServerResponse.Unauthorized('Autenticacion incorrecta');
     } catch (error) {
       console.error('Error al comprobar usuario y contraseña:', error);
       return ServerResponse.Error('Error al comprobar datos');
