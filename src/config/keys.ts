@@ -1,4 +1,9 @@
 import { PoolOptions } from 'mysql2';
+import { config } from 'dotenv';
+
+config({
+  path: './.env',
+});
 
 const isProduction: boolean = process.env.NODE_ENV === 'production' || false;
 
