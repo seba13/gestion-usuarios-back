@@ -1,8 +1,18 @@
-# CREAR .ENV
+# Creción de variable de entorno .env en raiz de proyecto backend
 
-Archivo .env
+PORT = 80
+NODE_ENV = 'development'
 
-```bash
-    NODE_ENV = 'development'
-    PORT = 5005
-```
+
+## Instalación de base de datos mysql 'sistema'
+## crear usuario de ambiente de desarrollo root y contraseña root
+
+
+## Instalación de paquetes npm
+
+npm i
+
+
+## ejecutar servidor backend express 
+
+npm run dev
