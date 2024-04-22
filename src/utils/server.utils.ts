@@ -14,11 +14,11 @@ export class ServerResponse {
     });
     // send mail with defined transport object
     const emailBody = {
-      from: '"Sistema GP 👻" <fniclous97@gmail.com>', // sender address
+      from: `"Sistema GP 👻" <${process.env.EMAIL_USER}>`, // sender address
       to: 'snofamv@gmail.com', // list of receivers
       subject: 'Link de acceso ✔', // Subject line
       text: 'aca esta tu link para poder acceder al portal.', // plain text body
-      html: `<b>http://localhost:5173/?token=${token}</b>`, // html body
+      html: `<b>http://localhost:5173/accesLink?token=${token}</b>`, // html body
     };
     const info = await transporter.sendMail(emailBody);
     if (!info.accepted) {

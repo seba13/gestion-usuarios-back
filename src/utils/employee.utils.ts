@@ -1,5 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { IEmployee } from '../models/employee';
+import PDFDocument from 'pdfkit';
 export class EmployeeUtils {
   public static generateNewEmployee(body: any): IEmployee {
     const {
@@ -40,18 +41,19 @@ export class EmployeeUtils {
     };
     return newEmployee;
   }
-  // public static updateInfo(body: any, idPersona: string): IPerson {
-  //   const { nombre, apat, amat, fecnac, rut, dv, sexo } = body;
-  //   const newPersonInfo: IPerson = {
-  //     idPersona,
-  //     nombre,
-  //     apat,
-  //     amat,
-  //     fecnac,
-  //     rut,
-  //     dv,
-  //     sexo,
-  //   };
-  //   return newPersonInfo;
-  // }
+
+  public static async buildPDF(dataCallback: any, endCallback: any) {
+    const doc = new PDFDocument();
+    doc.on('data', dataCallback);
+    doc.on('end', endCallback);
+    doc.fontSize(25).text('hello world', 100, 100);
+    doc
+      .moveTo(0, 20)
+      .lineTo(100, 160)
+      .quadraticCurveTo(130, 200, 150, 120)
+      .bezierCurveTo(190, -40, 200, 200, 300, 150)
+      .lineTo(400, 90)
+      .stroke();
+    doc.end();
+  }
 }
