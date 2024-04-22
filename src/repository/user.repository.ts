@@ -44,4 +44,38 @@ export class UserRepository {
     ); //field is optional
     return row as ResultSetHeader;
   }
+  public async activateUserStatus(userId: string): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query(
+      'UPDATE usuarios SET activo=1 WHERE id_usuario=?',
+      [userId]
+    ); //field is optional
+    return row as ResultSetHeader;
+  }
+  public async saveToken(data: any): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query('call crearToken(?,?,?);', [
+      data.newId,
+      data.token,
+      data.userId,
+    ]); //field is optional
+    return row as ResultSetHeader;
+  }
+  public async saveSession(data: any): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query('call crearSesion(?,?,?);', [
+      data.newId,
+      data.userId,
+      data.ip,
+    ]); //field is optional
+    return row as ResultSetHeader;
+  }
+  public async closeSession(userId: string): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query('call cerrarSesion(?);', [userId]); //field is optional
+    return row as ResultSetHeader;
+  }
+  public async saveLogLogin(data: any): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query(
+      'INSERT INTO usuarios_acceso_log VALUES(?,?,?,?);',
+      [data.newId, data.ip, data.username, data.timestamp]
+    ); //field is optional
+    return row as ResultSetHeader;
+  }
 }
