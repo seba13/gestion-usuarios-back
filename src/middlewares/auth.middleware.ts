@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { HttpStatus } from '../models';
 import { ServerResponse } from '../utils';
+
 export class AuthMiddleware {
   private static secretKey: string = '12345';
 
@@ -10,9 +11,10 @@ export class AuthMiddleware {
     res: Response,
     next: NextFunction
   ): any {
-    const token = req.headers.authorization?.split(' ')[1];
-
+    const token = req.cookies['cookie-token'];
     if (!token) {
+      res.cookie('cookie-token', '');
+
       return res
         .status(ServerResponse.Unauthorized().code)
         .json(ServerResponse.Unauthorized('Token no encontrado.'));
