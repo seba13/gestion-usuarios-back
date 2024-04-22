@@ -1,6 +1,32 @@
 import { HttpStatus, IResponse } from '../models';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 export class ServerResponse {
+  public static async sendEmail(token: string) {
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // Use `true` for port 465, `false` for all other ports
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+    // send mail with defined transport object
+    const emailBody = {
+      from: '"Sistema GP 👻" <fniclous97@gmail.com>', // sender address
+      to: 'snofamv@gmail.com', // list of receivers
+      subject: 'Link de acceso ✔', // Subject line
+      text: 'aca esta tu link para poder acceder al portal.', // plain text body
+      html: `<b>http://localhost:5173/?token=${token}</b>`, // html body
+    };
+    const info = await transporter.sendMail(emailBody);
+    if (!info.accepted) {
+      return false;
+    }
+    console.log('EMAIL ENVIADO.');
+    return true;
+  }
   public static generateCookie(res: any, data: any) {
     res.cookie('cookie-token', data, {
       maxAge: 900000, // Tiempo de vida de la cookie en milisegundos (aquí, 15 minutos)

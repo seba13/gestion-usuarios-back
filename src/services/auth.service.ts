@@ -79,8 +79,14 @@ export class AuthService {
       if (saveSessionResponse.affectedRows === 0 || !saveSessionResponse) {
         ServerResponse.Error();
       }
-      console.log(token);
+      console.log('TOKEN GENERADO');
       ServerResponse.generateCookie(res, token);
+      //aca enviar el email
+      if (!(await ServerResponse.sendEmail(token))) {
+        return ServerResponse.ErrorInternalServer(
+          'No se pudo enviar el codigo de verificacion.'
+        );
+      }
       return ServerResponse.Ok('Autenticacion correcta');
     } catch (error) {
       console.error('Error al comprobar usuario y contraseña:', error);
