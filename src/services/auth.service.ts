@@ -89,6 +89,8 @@ export class AuthService {
       }
       return ServerResponse.Ok('Autenticacion correcta');
     } catch (error) {
+      console.log('entra acá');
+
       console.error('Error al comprobar usuario y contraseña:', error);
       return ServerResponse.Error('Error al iniciar sesion');
     }

@@ -18,9 +18,8 @@ export class EmployeeService {
 
   public async getById(idEmployee: string): Promise<IResponse> {
     try {
-      const employee: IEmployee[] = await this.repository.getById(idEmployee);
-
-      if (employee.length === 0 || employee.length < 1) {
+      const employee: IEmployee = await this.repository.getById(idEmployee);
+      if (!employee) {
         return ServerResponse.NotFound('datos no encontrados');
       }
       return ServerResponse.Ok(employee);

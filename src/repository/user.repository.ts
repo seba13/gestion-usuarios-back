@@ -49,6 +49,7 @@ export class UserRepository {
       'UPDATE usuarios SET activo=1 WHERE id_usuario=?',
       [userId]
     ); //field is optional
+
     return row as ResultSetHeader;
   }
   public async saveToken(data: any): Promise<ResultSetHeader> {

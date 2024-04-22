@@ -2,6 +2,7 @@
 import { ResultSetHeader } from 'mysql2/typings/mysql/lib/protocol/packets/ResultSetHeader';
 import pool from '../config/db';
 import { IEmployee, IPerson } from '../models';
+import { RowDataPacket } from 'mysql2';
 
 export class EmployeeRepository {
   private promise;
@@ -47,8 +48,8 @@ export class EmployeeRepository {
       join estados est on est.id_estado = em.estado_empleado;`); //field is optional
     return row as IEmployee[];
   }
-  public async getById(idEmployee: string): Promise<IEmployee[]> {
-    const [row] = await this.promise.query(
+  public async getById(idEmployee: string): Promise<IEmployee> {
+    const [row] = await this.promise.query<RowDataPacket[]>(
       `select em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecnac, p.rut as rut, p.dv as dv, 
       p.sexo,detalles.ecv as 'estadoCivil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
       detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
@@ -62,8 +63,8 @@ export class EmployeeRepository {
       where em.id_empleado=?;`,
       [idEmployee]
     );
-    console.log(row);
-    return row as IEmployee[];
+
+    return row[0] as IEmployee;
   }
   public async save(
     newEmployee: IEmployee,
