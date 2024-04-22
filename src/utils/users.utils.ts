@@ -9,7 +9,7 @@ export class UsersUtils {
       idUsuario: uuid(),
       usuario: user.usuario,
       contrasena: newHashedPassword,
-      activo: false,
+      activo: 0,
       rol: 'admin',
     };
     return newUser as IUser;

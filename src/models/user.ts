@@ -3,7 +3,7 @@ export interface IUser {
   usuario: string;
   contrasena: string;
   rol: string;
-  activo: boolean;
+  activo: number | any;
   fecCreacion?: string;
   fecModificacion?: string;
 }
