@@ -21,7 +21,7 @@ export class Server {
   middlewares() {
     this.app.set('trust proxy', true);
     this.app.use(cookieParser());
-    this.app.use(cors());
+    this.app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
     this.app.use(express.json());
     this.app.use(usersRouter);
     this.app.use(employeeRouter);
