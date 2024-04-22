@@ -15,6 +15,6 @@ authRouter.post(
   controller.authenticate
 );
 authRouter.get('/closeSession/:userId', controller.closeSession);
-// authRouter.get('/protected', middleware.verifyToken, controller.test);
+authRouter.get('/protected', middleware.verifyToken, controller.test);
 
 export default authRouter;

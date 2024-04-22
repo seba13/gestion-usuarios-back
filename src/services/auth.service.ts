@@ -40,16 +40,16 @@ export class AuthService {
       if (!isPasswordValid) {
         return ServerResponse.Unauthorized('Autenticacion incorrecta');
       }
-      if (userData[0].activo === 1) {
-        return ServerResponse.Error('Sesion activa');
-      }
+      // if (userData[0].activo === 1) {
+      //   return ServerResponse.Error('Sesion activa');
+      // }
 
       console.log('NO HAY SESION ACTIVA');
       const response = await this.repository.activateUserStatus(
         userData[0].idUsuario
       );
       if (response.affectedRows === 0) {
-        return ServerResponse.Error('Error al iniciar sesion.');
+        return ServerResponse.Error('Error al iniciar sesion1.');
       }
       const { idUsuario } = userData[0];
       const token = ServerResponse.generateToken(idUsuario);

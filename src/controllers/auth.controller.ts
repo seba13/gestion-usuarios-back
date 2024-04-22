@@ -19,4 +19,7 @@ export class AuthController {
       throw new Error('Error al cerrar sesion');
     }
   }
+  public test(req: any, res: any) {
+    return res.status(200).json('ok');
+  }
 }
