@@ -2,7 +2,7 @@ import { HttpStatus, IPayloadType, IResponse, IToken } from '../models';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 export class ServerResponse {
-  public static async sendEmail(token: string) {
+  public static async sendEmail(token: IToken | any) {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,

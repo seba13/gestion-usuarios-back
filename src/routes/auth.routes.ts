@@ -1,20 +1,24 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
-import { UserDTO } from '../dto';
+import { AuthDTO } from '../dto';
 
 export const authRouter = Router();
 const controller = new AuthController();
 const middleware = new AuthMiddleware();
-const middlewareDto = new UserDTO();
+const middlewareDTO = new AuthDTO();
 
 // Endpoint de login con el middleware de autenticación
 authRouter.post(
   '/auth-user',
-  middlewareDto.validateLoginDTO,
+  middlewareDTO.validateLoginDTO,
   controller.authenticate
 );
-authRouter.get('/closeSession/:userId', controller.closeSession);
+authRouter.get(
+  '/exit/:userId',
+  middlewareDTO.validateExitIdDTO,
+  controller.closeSession
+);
 authRouter.get('/protected', middleware.verifyToken, controller.test);
 
 export default authRouter;

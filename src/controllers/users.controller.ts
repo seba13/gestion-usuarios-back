@@ -15,9 +15,9 @@ export class UsersController {
     }
   }
 
-  public async getById(req: Request, res: Response): Promise<Response> {
+  public async getByUsername(req: Request, res: Response): Promise<Response> {
     try {
-      const response: IResponse = await new UsersService().getById(
+      const response: IResponse = await new UsersService().getByUsername(
         req.params.idUsuario
       );
       return res.status(response.code).json(response);

@@ -23,9 +23,9 @@ export class PersonsService {
     }
   }
 
-  public async getById(name: string): Promise<IResponse> {
+  public async getByRut(name: string): Promise<IResponse> {
     try {
-      const person: IPerson[] = await this.repository.getById(name);
+      const person: IPerson[] = await this.repository.getByRut(name);
 
       if (person.length === 0 || person.length < 1) {
         return ServerResponse.NotFound('datos no encontrados');
@@ -45,13 +45,12 @@ export class PersonsService {
       }
       return ServerResponse.Created();
     } catch (error) {
-      // console.log(error);
+      console.error(error);
       return ServerResponse.Error('Error al insertar datos.');
     }
   }
 
   public async update(newPersonInfo: IPerson): Promise<IResponse> {
-    console.log(newPersonInfo);
     const resultUpdate: ResultSetHeader =
       await this.repository.update(newPersonInfo);
     if (resultUpdate.affectedRows === 0 || resultUpdate.affectedRows < 1) {

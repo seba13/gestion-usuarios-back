@@ -47,7 +47,7 @@ from
     left join estados est on est.id_estado = em.estado_empleado;`); //field is optional
     return row as IPerson[];
   }
-  public async getById(idPerson: string): Promise<IPerson[]> {
+  public async getByRut(idPerson: string): Promise<IPerson[]> {
     const [row] = await this.promise.query(
       `select
       per.id_persona as idPersona,
@@ -112,7 +112,7 @@ from
     const [row] = await this.promise.query(
       'call ActualizarPersona(?,?,?,?,?,?,?,?)',
       [
-        newPerson.idPersona,
+        newPerson.rut,
         newPerson.nombre,
         newPerson.paterno,
         newPerson.materno,

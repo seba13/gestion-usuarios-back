@@ -1,18 +1,26 @@
 import { Router } from 'express';
 import { EmployeeController } from '../controllers';
-import { UserDTO } from '../dto';
+import { EmployeeDTO } from '../dto';
 
 export const employeeRouter = Router();
 const controller = new EmployeeController();
-const middlewareDto = new UserDTO();
+const middlewareDTO = new EmployeeDTO();
 // Endpoint de login con el middleware de autenticación
 employeeRouter.get('/empleados', controller.getAll);
 employeeRouter.get('/empleado/pdf', controller.test);
-employeeRouter.get('/empleado/id/:idEmpleado', controller.getById);
-employeeRouter.get('/empleado/rut/:rut', controller.getByRut);
+employeeRouter.get(
+  '/empleado/id/:idEmpleado',
+  middlewareDTO.validateGetByIdDTO,
+  controller.getById
+);
+employeeRouter.get(
+  '/empleado/rut/:rut',
+  middlewareDTO.validateGetByRutDTO,
+  controller.getByRut
+);
 employeeRouter.post(
   '/empleado',
-  middlewareDto.validateNewEmployeeDTO,
+  middlewareDTO.validateNewEmployeeDTO,
   controller.save
 );
 

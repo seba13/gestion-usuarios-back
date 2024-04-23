@@ -21,7 +21,7 @@ export class AuthService {
     //REFACTORIZAR TODO ESTO
     try {
       const { usuario, contrasena } = req.body;
-      const userData: IUser[] = await this.repository.getById(usuario);
+      const userData: IUser[] = await this.repository.getByUsername(usuario);
       //rescatar el log de intento de sesion
       const clientIp = IpUtils.getIp(req);
       this.repository.saveLogLogin({
@@ -70,7 +70,7 @@ export class AuthService {
       //falta guardar la token en la bd
       const tokenInfo: ITokenInfo = {
         id: uuid(),
-        token: token.token,
+        token: token,
         userId: idUsuario,
         createdAt: new Date().toDateString(),
       };
@@ -94,7 +94,7 @@ export class AuthService {
       console.log('TOKEN GENERADO');
       ServerResponse.generateCookie(res, token);
       //aca enviar el email
-      if (!(await ServerResponse.sendEmail(token.token))) {
+      if (!(await ServerResponse.sendEmail(token))) {
         return ServerResponse.ErrorInternalServer(
           'No se pudo enviar el codigo de verificacion.'
         );

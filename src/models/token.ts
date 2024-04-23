@@ -3,7 +3,7 @@ export interface IToken {
 }
 export interface ITokenInfo {
   id?: string;
-  token?: string;
+  token?: string | any;
   createdAt?: string;
   expiresAt?: string;
   userId?: string;

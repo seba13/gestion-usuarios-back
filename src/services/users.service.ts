@@ -19,10 +19,10 @@ export class UsersService {
     }
   }
 
-  public async getById(username: string): Promise<IResponse> {
+  public async getByUsername(username: string): Promise<IResponse> {
     try {
-      const user: IUser[] = await this.repository.getById(username);
-
+      const user: IUser[] = await this.repository.getByUsername(username);
+      console.log(user);
       if (!user.length) {
         return ServerResponse.NotFound('datos no encontrados');
       }

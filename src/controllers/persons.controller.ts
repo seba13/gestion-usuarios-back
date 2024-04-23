@@ -14,10 +14,10 @@ export class PersonsController {
       return res.status(HttpStatus.ERROR).send('Error al obtener datos.');
     }
   }
-  public async getById(req: Request, res: Response): Promise<Response> {
+  public async getByRut(req: Request, res: Response): Promise<Response> {
     try {
-      const { idpersona } = req.params;
-      const serviceResponse = await new PersonsService().getById(idpersona);
+      const { rut } = req.params;
+      const serviceResponse = await new PersonsService().getByRut(rut);
       return res.status(serviceResponse.code).json(serviceResponse);
     } catch (error) {
       console.error('Error al obtener datos:', error);
@@ -38,10 +38,7 @@ export class PersonsController {
   }
   public async update(req: Request, res: Response): Promise<Response> {
     try {
-      const newPersonInfo: IPerson = PersonsUtils.updateInfo(
-        req.body,
-        req.params.idPersona
-      );
+      const newPersonInfo: IPerson = PersonsUtils.updateInfo(req.body);
       const updateResponse: IResponse = await new PersonsService().update(
         newPersonInfo
       );
