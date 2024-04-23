@@ -20,3 +20,7 @@ export interface IEmployee {
   fecDespido?: string;
   estado?: string;
 }
+
+export type Employee = {
+  rut: number;
+};

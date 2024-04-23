@@ -22,6 +22,16 @@ export class EmployeeController {
       return res.status(HttpStatus.ERROR).send('Error al obtener datos.');
     }
   }
+  public async getByRut(req: Request, res: Response): Promise<Response> {
+    try {
+      const { rut } = req.params;
+      const serviceResponse = await new EmployeeService().getByRut(rut);
+      return res.status(serviceResponse.code).json(serviceResponse);
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
+      return res.status(HttpStatus.ERROR).send('Error al obtener datos.');
+    }
+  }
   public async save(req: Request, res: Response): Promise<Response> {
     try {
       const insertResponse: IResponse = await new EmployeeService().save(

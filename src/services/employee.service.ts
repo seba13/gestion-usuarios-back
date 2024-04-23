@@ -28,6 +28,19 @@ export class EmployeeService {
       return ServerResponse.ErrorInternalServer('Error al buscar datos');
     }
   }
+  public async getByRut(rut: string): Promise<IResponse> {
+    try {
+      const employee: IEmployee = await this.repository.getByRut(rut);
+      console.log(employee);
+      if (!employee) {
+        return ServerResponse.NotFound('datos no encontrados');
+      }
+      return ServerResponse.Ok(employee);
+    } catch (error) {
+      console.error('Error servicio:', error);
+      return ServerResponse.ErrorInternalServer('Error al buscar datos');
+    }
+  }
   public async save(body: any): Promise<IResponse> {
     try {
       const newEmployee: IEmployee = EmployeeUtils.generateNewEmployee(body);
