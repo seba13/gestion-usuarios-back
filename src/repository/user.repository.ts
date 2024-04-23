@@ -1,6 +1,6 @@
 import { ResultSetHeader } from 'mysql2';
 import pool from '../config/db';
-import { IUser } from '../models';
+import { ITokenInfo, IUser } from '../models';
 
 export class UserRepository {
   private promise;
@@ -52,11 +52,18 @@ export class UserRepository {
 
     return row as ResultSetHeader;
   }
-  public async saveToken(data: any): Promise<ResultSetHeader> {
+  public async disableUserStatus(userId: string): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query(
+      'UPDATE usuarios SET activo=0 WHERE id_usuario=?',
+      [userId]
+    ); //field is optional
+    return row as ResultSetHeader;
+  }
+  public async saveToken(token: ITokenInfo): Promise<ResultSetHeader> {
     const [row] = await this.promise.query('call crearToken(?,?,?);', [
-      data.newId,
-      data.token,
-      data.userId,
+      token.id,
+      token.token,
+      token.userId,
     ]); //field is optional
     return row as ResultSetHeader;
   }

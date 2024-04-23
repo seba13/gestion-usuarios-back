@@ -1,4 +1,4 @@
-import { HttpStatus, IResponse } from '../models';
+import { HttpStatus, IPayloadType, IResponse, IToken } from '../models';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 export class ServerResponse {
@@ -36,12 +36,17 @@ export class ServerResponse {
     console.log('COOKIE CREADA.');
   }
   public static generateToken(
-    payload: any,
+    payload: IPayloadType,
     secretKey: string = '12345'
-  ): string {
-    const token = jwt.sign(payload, secretKey);
-    // res.set('Authorization', `Bearer ${existsUser.message.token}`);
-    return token;
+  ): IToken {
+    try {
+      const token = jwt.sign(payload, secretKey, { expiresIn: '5m' });
+      console.log('TOKEN: ', token);
+      return token as any as IToken;
+    } catch (error) {
+      console.error('Error al generar el token:', error);
+      throw error; // Puedes manejar el error según tus necesidades
+    }
   }
 
   public static Ok(data?: any): IResponse {
