@@ -89,8 +89,9 @@ export class EmployeeRepository {
     newPerson: IPerson
   ): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
-      'call `NuevoEmpleado`(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);',
+      'call `NuevoEmpleado`(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);',
       [
+        newEmployee.idEmpleado,
         newPerson.rut,
         newPerson.idPersona,
         newPerson.nombre,

@@ -47,11 +47,12 @@ export class EmployeeService {
       const newPerson: IPerson = PersonsUtils.generateNewPerson(newEmployee);
       const resultSave = await this.repository.save(newEmployee, newPerson);
       // Procesar respuesta
-      if (resultSave.affectedRows) {
+      if (resultSave.affectedRows === 0 || !resultSave) {
         return ServerResponse.Error('No se creo el registro');
       }
       return ServerResponse.Ok('Empleado creado');
     } catch (error: any) {
+      console.log(error);
       return ServerResponse.Error(error.message);
     }
   }
