@@ -60,7 +60,7 @@ export class EmployeeRepository {
       join detalles on detalles.id_detalle=pd.id_detalle
       join regiones reg on reg.region_id=detalles.region
       join comunas com on com.comuna_id=detalles.comuna
-      where em.id_empleado=?;`,
+      where p.rut=?;`,
       [idEmployee]
     );
 
