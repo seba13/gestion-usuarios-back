@@ -8,6 +8,14 @@ export class AuthService {
   constructor(repository: UserRepository = new UserRepository()) {
     this.repository = repository;
   }
+  public async verifyToken(token: IToken): Promise<IResponse> {
+    const verifyToken: any = await this.repository.verifyToken(token);
+    if (verifyToken[0].count === 0 || verifyToken[0].count < 1) {
+      return ServerResponse.NotFound('Token no encontrado');
+    }
+    return ServerResponse.Ok('Token valido');
+  }
+
   public async closeSession(req: any): Promise<IResponse> {
     const { userId } = req.params;
     const closeSession = await this.repository.closeSession(userId);

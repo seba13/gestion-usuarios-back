@@ -1,7 +1,11 @@
+import { HttpStatus, IToken } from '../models';
 import { AuthService } from '../services/';
 import { Request, Response } from 'express';
 export class AuthController {
-  public async authenticate(req: Request, res: Response): Promise<Response> {
+  public static async authenticate(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
     try {
       const existsUser = await new AuthService().authenticate(res, req);
       return res.status(existsUser.code).json(existsUser);
@@ -19,7 +23,10 @@ export class AuthController {
       throw new Error('Error al cerrar sesion');
     }
   }
-  public test(req: any, res: any) {
-    return res.status(200).json('ok');
+  public async verifyIncomingToken(req: any, res: any) {
+    const unknowToken: IToken = req.query;
+    console.log('Incoming #Token: ', unknowToken.token);
+    const myService = await new AuthService().verifyToken(unknowToken);
+    return res.status(HttpStatus.OK).json(myService);
   }
 }

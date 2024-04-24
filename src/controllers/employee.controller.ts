@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { HttpStatus, IResponse } from '../models';
 import { EmployeeService } from '../services/employee.service';
-import { EmployeeUtils } from '../utils';
 export class EmployeeController {
   public async getAll(req: Request, res: Response): Promise<Response> {
     try {
@@ -57,16 +56,4 @@ export class EmployeeController {
   //       return res.status(HttpStatus.ERROR).send('1Error al actualizar datos.');
   //     }
   //   }
-  public async test(req: Request, res: Response): Promise<Response> {
-    console.log('ENVIANDO PDF');
-    const stream = res.writeHead(HttpStatus.OK, {
-      'Content-Type': 'application/pdf',
-      'content-disposition': 'inline; filename:documento.pdf',
-    });
-    const service = await EmployeeUtils.buildPDF(
-      (data: any) => stream.write(data),
-      () => stream.end()
-    );
-    return res.status(HttpStatus.OK).send(service);
-  }
 }

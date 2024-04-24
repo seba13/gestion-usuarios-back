@@ -7,7 +7,6 @@ const controller = new EmployeeController();
 const middlewareDTO = new EmployeeDTO();
 // Endpoint de login con el middleware de autenticación
 employeeRouter.get('/empleados', controller.getAll);
-employeeRouter.get('/empleado/pdf', controller.test);
 employeeRouter.get(
   '/empleado/id/:idEmpleado',
   middlewareDTO.validateGetByIdDTO,

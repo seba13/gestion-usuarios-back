@@ -23,15 +23,15 @@ export class Server {
     this.app.use(cookieParser());
     this.app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
     this.app.use(express.json());
+    this.app.use(authRouter);
     this.app.use(usersRouter);
     this.app.use(employeeRouter);
     this.app.use(personsRouter);
-    this.app.use(authRouter);
   }
 
   listen() {
     this.app.listen(this.port, () => {
-      console.log('servidor ejecutandose en: http://localhost:', this.port);
+      console.log(`servidor ejecutandose en: http://localhost:${this.port}`);
     });
   }
 }

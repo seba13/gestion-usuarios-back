@@ -5,7 +5,7 @@ import Ajv from 'ajv';
 import addErrors from 'ajv-errors';
 
 export class AuthDTO {
-  public validateLoginDTO(
+  public static validateLoginDTO(
     req: Request | any,
     res: Response,
     next: NextFunction
@@ -39,7 +39,7 @@ export class AuthDTO {
       next();
     }
   }
-  public validateExitIdDTO(
+  public static validateExitIdDTO(
     req: Request | any,
     res: Response,
     next: NextFunction

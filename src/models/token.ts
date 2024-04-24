@@ -1,6 +1,8 @@
 export interface IToken {
   token: string;
+  expired?: number;
 }
+
 export interface ITokenInfo {
   id?: string;
   token?: string | any;

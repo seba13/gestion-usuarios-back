@@ -1,24 +1,28 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers';
-import { AuthMiddleware } from '../middlewares/auth.middleware';
-import { AuthDTO } from '../dto';
+// import { AuthMiddleware } from '../middlewares/auth.middleware';
+import { AuthDTO, TokenDTO } from '../dto';
 
 export const authRouter = Router();
 const controller = new AuthController();
-const middleware = new AuthMiddleware();
-const middlewareDTO = new AuthDTO();
+// const middleware = new AuthMiddleware();
 
 // Endpoint de login con el middleware de autenticación
+authRouter.get(
+  '/verify',
+  TokenDTO.validateTokenDTO,
+  controller.verifyIncomingToken
+); //verify?token=238127ahsdsjashd
 authRouter.post(
   '/auth-user',
-  middlewareDTO.validateLoginDTO,
-  controller.authenticate
+  AuthDTO.validateLoginDTO,
+  AuthController.authenticate
 );
 authRouter.get(
   '/exit/:userId',
-  middlewareDTO.validateExitIdDTO,
+  AuthDTO.validateExitIdDTO,
   controller.closeSession
 );
-authRouter.get('/protected', middleware.verifyToken, controller.test);
+// authRouter.get('/protected', middleware.verifyToken, controller.test);
 
 export default authRouter;

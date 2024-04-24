@@ -1,6 +1,6 @@
-import { ResultSetHeader } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import pool from '../config/db';
-import { ITokenInfo, IUser } from '../models';
+import { IToken, ITokenInfo, IUser } from '../models';
 
 export class UserRepository {
   private promise;
@@ -83,6 +83,14 @@ export class UserRepository {
     const [row] = await this.promise.query(
       'INSERT INTO usuarios_acceso_log VALUES(?,?,?,?);',
       [data.newId, data.ip, data.username, data.timestamp]
+    ); //field is optional
+    return row as ResultSetHeader;
+  }
+
+  public async verifyToken(token: IToken): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query(
+      'select count(*) as count from tokens where utilizado=0 and token=?',
+      [token.token]
     ); //field is optional
     return row as ResultSetHeader;
   }
