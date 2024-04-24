@@ -11,7 +11,7 @@ export class AuthService {
   public async verifyToken(token: IToken): Promise<IResponse> {
     const verifyToken: any = await this.repository.verifyToken(token);
     if (verifyToken[0].count === 0 || verifyToken[0].count < 1) {
-      return ServerResponse.NotFound('Token no encontrado');
+      return ServerResponse.Unauthorized('Token no encontrado');
     }
     return ServerResponse.Ok('Token valido');
   }
