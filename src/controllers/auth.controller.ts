@@ -24,9 +24,9 @@ export class AuthController {
     }
   }
   public async verifyIncomingToken(req: any, res: any) {
-    const unknowToken: IToken = req.query;
-    console.log('Incoming #Token: ', unknowToken.token);
-    const myService = await new AuthService().verifyToken(unknowToken);
+    const incomingToken: IToken = req.query;
+    console.log('Incoming #Token: ', incomingToken.token);
+    const myService = await new AuthService().verifyToken(incomingToken);
     return res.status(HttpStatus.OK).json(myService);
   }
 }

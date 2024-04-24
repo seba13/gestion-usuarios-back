@@ -1,4 +1,4 @@
-import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import { ResultSetHeader } from 'mysql2';
 import pool from '../config/db';
 import { IToken, ITokenInfo, IUser } from '../models';
 
@@ -89,7 +89,14 @@ export class UserRepository {
 
   public async verifyToken(token: IToken): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
-      'select count(*) as count from tokens where utilizado=0 and token=?',
+      'select count(*) as count from tokens where token=? and utilizado=0',
+      [token.token]
+    ); //field is optional
+    return row as ResultSetHeader;
+  }
+  public async disableToken(token: IToken): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query(
+      'UPDATE tokens SET utilizado=1, expirado = 1 where token=?',
       [token.token]
     ); //field is optional
     return row as ResultSetHeader;

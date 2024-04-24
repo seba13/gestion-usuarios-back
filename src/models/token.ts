@@ -10,3 +10,5 @@ export interface ITokenInfo {
   expiresAt?: string;
   userId?: string;
 }
+
+export type TSecretKey = string | any;

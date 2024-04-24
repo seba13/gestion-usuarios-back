@@ -1,17 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { HttpStatus } from '../models';
+import { HttpStatus, TSecretKey } from '../models';
 import { ServerResponse } from '../utils';
 
 export class AuthMiddleware {
-  private static secretKey: string = '12345';
+  private static secretKey: TSecretKey = process.env.JWT_KEY;
 
-  public verifyToken(
+  public static verifyToken(
     req: Request | any,
     res: Response,
     next: NextFunction
   ): any {
     const token = req.cookies['cookie-token'];
+    console.log('COOKIE');
     if (!token) {
       res.cookie('cookie-token', '');
 

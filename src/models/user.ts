@@ -7,3 +7,5 @@ export interface IUser {
   fecCreacion?: string;
   fecModificacion?: string;
 }
+
+export type UserEmail = string;

@@ -1,8 +1,32 @@
-import { HttpStatus, IPayloadType, IResponse, IToken } from '../models';
+import {
+  HttpStatus,
+  IPayloadType,
+  IResponse,
+  IToken,
+  TSecretKey,
+  UserEmail,
+} from '../models';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 export class ServerResponse {
-  public static async sendEmail(token: IToken | any) {
+  public static async verifyTokenSign(token: IToken): Promise<boolean> {
+    // Verificar el token
+    jwt.verify(
+      token.token,
+      process.env.JWT_KEY as TSecretKey,
+      (err: any, decoded: any) => {
+        if (err) {
+          // El token no es válido
+          console.error('Error al verificar el token:', err.message);
+          return false;
+        }
+        console.log('Token válido:', decoded);
+      }
+    );
+    // El token es válido
+    return true;
+  }
+  public static async sendEmail(token: IToken | any, toEmail: UserEmail) {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
@@ -15,7 +39,7 @@ export class ServerResponse {
     // send mail with defined transport object
     const emailBody = {
       from: `"Sistema GP 👻" <${process.env.EMAIL_USER}>`, // sender address
-      to: 'snofamv@gmail.com', // list of receivers
+      to: `${toEmail}`, // list of receivers
       subject: 'Link de acceso ✔', // Subject line
       text: 'aca esta tu link para poder acceder al portal.', // plain text body
       html: `<b>http://localhost:5173/accesLink?token=${token}</b>`, // html body
@@ -35,12 +59,11 @@ export class ServerResponse {
     });
     console.log('COOKIE CREADA.');
   }
-  public static generateToken(
-    payload: IPayloadType,
-    secretKey: string = '12345'
-  ): IToken {
+  public static generateToken(payload: IPayloadType): IToken {
     try {
-      const token = jwt.sign(payload, secretKey, { expiresIn: '5m' });
+      const token = jwt.sign(payload, process.env.JWT_KEY as TSecretKey, {
+        expiresIn: '5m',
+      });
       console.log('TOKEN: ', token);
       return token as any as IToken;
     } catch (error) {

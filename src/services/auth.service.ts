@@ -9,11 +9,24 @@ export class AuthService {
     this.repository = repository;
   }
   public async verifyToken(token: IToken): Promise<IResponse> {
-    const verifyToken: any = await this.repository.verifyToken(token);
-    if (verifyToken[0].count === 0 || verifyToken[0].count < 1) {
-      return ServerResponse.Unauthorized('Token no encontrado');
+    // VALIDAR LA FIRMA
+    const verifyTokenSign = await ServerResponse.verifyTokenSign(token);
+    if (!verifyTokenSign) {
+      return ServerResponse.Unauthorized('Token invalido.');
     }
-    return ServerResponse.Ok('Token valido');
+    //VALIDAR SI EXISTE TOKEN
+    const existsToken: any = await this.repository.verifyToken(token);
+    if (existsToken[0].count === 0) {
+      return ServerResponse.Unauthorized('Token invalido o expirado.');
+    }
+    //SI SON IGUALES, BAJARLO DE LA BASE DE DATOS
+    const responseDisableToken = await this.repository.disableToken(token);
+    if (responseDisableToken.affectedRows === 0) {
+      return ServerResponse.ErrorInternalServer();
+    }
+    console.log('TOKEN MARCADO UTILIZADO.');
+    //RETORNAR RESPUESTA
+    return ServerResponse.Ok('Token recibido valido');
   }
 
   public async closeSession(req: any): Promise<IResponse> {
@@ -102,9 +115,11 @@ export class AuthService {
       console.log('TOKEN GENERADO');
       ServerResponse.generateCookie(res, token);
       //aca enviar el email
-      if (!(await ServerResponse.sendEmail(token))) {
+      if (
+        !(await ServerResponse.sendEmail(token, 'fabian.niclous@gmail.com'))
+      ) {
         return ServerResponse.ErrorInternalServer(
-          'No se pudo enviar el codigo de verificacion.'
+          'No se pudo enviar el link de autorizacion.'
         );
       }
       return ServerResponse.Ok('Autenticacion correcta');
