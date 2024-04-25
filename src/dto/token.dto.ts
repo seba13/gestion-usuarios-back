@@ -11,7 +11,6 @@ export class TokenDTO {
     next: NextFunction
   ): any {
     // de manera regular con la libreria
-    console.log('DTO START:');
     const dataRequired = req.query;
     const schema = {
       type: 'object',

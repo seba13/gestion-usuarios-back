@@ -6,11 +6,7 @@ import { AuthDTO, TokenDTO } from '../dto';
 export const authRouter = Router();
 const controller = new AuthController();
 
-authRouter.get(
-  '/verifyAccess',
-  TokenDTO.validateTokenDTO,
-  controller.verifyIncomingToken
-); //verify?token=238127ahsdsjashd
+authRouter.get('/verifyToken', controller.verifyCookieToken);
 authRouter.get(
   '/verifyAccess',
   TokenDTO.validateTokenDTO,

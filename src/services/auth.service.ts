@@ -1,6 +1,13 @@
 import { UserRepository } from '../repository/user.repository';
 import { IpUtils, Password, ServerResponse } from '../utils';
-import { IPayloadType, IResponse, IToken, ITokenInfo, IUser } from '../models';
+import {
+  IPayloadType,
+  IResponse,
+  IToken,
+  ITokenInfo,
+  IUser,
+  TToken,
+} from '../models';
 import { v4 as uuid } from 'uuid';
 export class AuthService {
   private repository: UserRepository;
@@ -8,7 +15,16 @@ export class AuthService {
   constructor(repository: UserRepository = new UserRepository()) {
     this.repository = repository;
   }
-  public async verifyToken(token: IToken): Promise<IResponse> {
+  public async verifyCookieToken(token: TToken): Promise<IResponse> {
+    // VALIDAR LA FIRMA
+    console.log('Incoming cookie #Token: ', token);
+    const verifyTokenSign = await ServerResponse.verifyTokenSign(token);
+    if (!verifyTokenSign) {
+      return ServerResponse.Unauthorized('Token invalido.');
+    }
+    return ServerResponse.Ok('Token valido');
+  }
+  public async verifyToken(token: TToken): Promise<IResponse> {
     // VALIDAR LA FIRMA
     const verifyTokenSign = await ServerResponse.verifyTokenSign(token);
     if (!verifyTokenSign) {

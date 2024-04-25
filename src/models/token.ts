@@ -12,3 +12,4 @@ export interface ITokenInfo {
 }
 
 export type TSecretKey = string | any;
+export type TToken = string;

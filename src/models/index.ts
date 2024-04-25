@@ -5,4 +5,4 @@ export { IPerson } from './persons';
 export { HttpStatus } from './httpStatus';
 export { IEmployee } from './employee';
 export { IPayloadType } from './payload';
-export { IToken, ITokenInfo, TSecretKey } from './token';
+export { IToken, ITokenInfo, TSecretKey, TToken } from './token';

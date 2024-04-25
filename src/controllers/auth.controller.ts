@@ -1,4 +1,4 @@
-import { HttpStatus, IToken } from '../models';
+import { HttpStatus, TToken } from '../models';
 import { AuthService } from '../services/';
 import { Request, Response } from 'express';
 export class AuthController {
@@ -24,9 +24,15 @@ export class AuthController {
     }
   }
   public async verifyIncomingToken(req: any, res: any) {
-    const incomingToken: IToken = req.query;
-    console.log('Incoming #Token: ', incomingToken.token);
-    const myService = await new AuthService().verifyToken(incomingToken);
+    const token: TToken = req.cookies['cookie-token'];
+
+    console.log('Incoming #Token: ', token);
+    const myService = await new AuthService().verifyToken(token);
     return res.status(HttpStatus.OK).json(myService);
+  }
+  public async verifyCookieToken(req: any, res: any) {
+    const token: TToken = req.cookies['cookie-token'];
+    const isValid = await new AuthService().verifyCookieToken(token);
+    return res.status(HttpStatus.OK).json(isValid);
   }
 }

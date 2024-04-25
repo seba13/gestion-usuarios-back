@@ -4,15 +4,16 @@ import {
   IResponse,
   IToken,
   TSecretKey,
+  TToken,
   UserEmail,
 } from '../models';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 export class ServerResponse {
-  public static async verifyTokenSign(token: IToken): Promise<boolean> {
+  public static async verifyTokenSign(token: TToken): Promise<boolean> {
     // Verificar el token
     jwt.verify(
-      token.token,
+      token,
       process.env.JWT_KEY as TSecretKey,
       (err: any, decoded: any) => {
         if (err) {
@@ -62,7 +63,7 @@ export class ServerResponse {
   public static generateToken(payload: IPayloadType): IToken {
     try {
       const token = jwt.sign(payload, process.env.JWT_KEY as TSecretKey, {
-        expiresIn: '5m',
+        expiresIn: '3m',
       });
       console.log('TOKEN: ', token);
       return token as any as IToken;

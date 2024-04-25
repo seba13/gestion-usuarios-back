@@ -1,6 +1,6 @@
 import { ResultSetHeader } from 'mysql2';
 import pool from '../config/db';
-import { IToken, ITokenInfo, IUser } from '../models';
+import { ITokenInfo, IUser, TToken } from '../models';
 
 export class UserRepository {
   private promise;
@@ -87,17 +87,17 @@ export class UserRepository {
     return row as ResultSetHeader;
   }
 
-  public async verifyToken(token: IToken): Promise<ResultSetHeader> {
+  public async verifyToken(token: TToken): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
       'select count(*) as count from tokens where token=? and utilizado=0',
-      [token.token]
+      [token]
     ); //field is optional
     return row as ResultSetHeader;
   }
-  public async disableToken(token: IToken): Promise<ResultSetHeader> {
+  public async disableToken(token: TToken): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
       'UPDATE tokens SET utilizado=1, expirado = 1 where token=?',
-      [token.token]
+      [token]
     ); //field is optional
     return row as ResultSetHeader;
   }
