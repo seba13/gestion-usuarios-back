@@ -38,4 +38,53 @@ export class TokenDTO {
       next();
     }
   }
+  public static validateCookieDTO(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    // Verificar si la cookie está presente
+    const cookieToken = req.cookies && req.cookies['cookie-token'];
+
+    if (!cookieToken) {
+      return res
+        .status(HttpStatus.ERROR)
+        .json(
+          ServerResponse.Error('Cookie token no encontrado en la solicitud.')
+        );
+    }
+
+    // Definir el esquema de validación
+    const schema = {
+      type: 'object',
+      properties: {
+        cookieToken: { type: 'string' },
+      },
+      required: ['cookieToken'],
+      additionalProperties: false,
+    };
+
+    // Crear el validador Ajv
+    const ajv = new Ajv({ allErrors: true });
+    addErrors(ajv);
+    const validate = ajv.compile(schema);
+
+    // Validar la cookie
+    const isDtoValid = validate({ cookieToken });
+
+    if (!isDtoValid) {
+      // Enviar respuesta de error si la validación falla
+      return res
+        .status(HttpStatus.ERROR)
+        .json(
+          ServerResponse.Error(
+            ajv.errorsText(validate.errors, { separator: '\n' })
+          )
+        );
+    }
+
+    // Si la validación es exitosa, pasar al siguiente middleware
+    console.log('DTO SUCCESS.');
+    next();
+  }
 }
