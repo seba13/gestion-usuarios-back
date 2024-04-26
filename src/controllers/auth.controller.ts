@@ -32,6 +32,7 @@ export class AuthController {
   }
   public async verifyCookieToken(req: any, res: any) {
     const token: TToken = req.cookies['cookie-token'];
+    console.log('TOKEN RECIBIDO: ', token);
     const isValid = await new AuthService().verifyCookieToken(token);
     return res.status(HttpStatus.OK).json(isValid);
   }

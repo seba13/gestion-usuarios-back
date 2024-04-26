@@ -10,22 +10,20 @@ import {
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 export class ServerResponse {
-  public static async verifyTokenSign(token: TToken): Promise<boolean> {
+  public static async verifyTokenSign(token: TToken): Promise<any> {
     // Verificar el token
-    jwt.verify(
+    const response = jwt.verify(
       token,
       process.env.JWT_KEY as TSecretKey,
       (err: any, decoded: any) => {
         if (err) {
           // El token no es válido
-          console.error('Error al verificar el token:', err.message);
-          return false;
+          return HttpStatus.ERROR;
         }
-        console.log('Token válido:', decoded);
+        return HttpStatus.OK;
       }
     );
-    // El token es válido
-    return true;
+    return response;
   }
   public static async sendEmail(token: IToken | any, toEmail: UserEmail) {
     const transporter = nodemailer.createTransport({

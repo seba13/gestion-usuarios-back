@@ -1,6 +1,7 @@
 import { UserRepository } from '../repository/user.repository';
 import { IpUtils, Password, ServerResponse } from '../utils';
 import {
+  HttpStatus,
   IPayloadType,
   IResponse,
   IToken,
@@ -16,13 +17,11 @@ export class AuthService {
     this.repository = repository;
   }
   public async verifyCookieToken(token: TToken): Promise<IResponse> {
-    // VALIDAR LA FIRMA
-    console.log('Incoming cookie #Token: ', token);
-    const verifyTokenSign = await ServerResponse.verifyTokenSign(token);
-    if (!verifyTokenSign) {
-      return ServerResponse.Unauthorized('Token invalido.');
-    }
-    return ServerResponse.Ok('Token valido');
+    const verifyTokenSign: HttpStatus =
+      await ServerResponse.verifyTokenSign(token);
+    return verifyTokenSign === 200
+      ? ServerResponse.Ok('Token firmado valido.')
+      : ServerResponse.Error('Token firma invalida.');
   }
   public async verifyToken(token: TToken): Promise<IResponse> {
     // VALIDAR LA FIRMA
