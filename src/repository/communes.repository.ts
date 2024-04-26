@@ -8,7 +8,10 @@ export class CommunesRepository {
   }
   public async getCommunes(): Promise<ICommune[]> {
     const [row] = await this.promise.query(
-      'SELECT comuna_id as idComuna, comuna_nombre as nombreComuna, provincia_id as idProvincia FROM comunas;'
+      `SELECT
+    comuna_id as idComuna, comuna_nombre as nombreComuna, provincia_nombre as nombreProvincia
+FROM comunas c
+JOIN provincias p on p.provincia_id = c.provincia_id;`
     ); //field is optional
     // console.log(row);
     return row as ICommune[];
@@ -22,7 +25,13 @@ export class CommunesRepository {
   }
   public async getProvinces(): Promise<IProvince[]> {
     const [row] = await this.promise.query(
-      'SELECT provincia_id as idProvincia, provincia_nombre as nombreProvincia from provincias;'
+      `select
+      provincia_id as idProvincia,
+       provincia_nombre as nombreProvincia,
+       region_nombre as nombreRegion,
+       region_ordinal as regionOrdinal
+   from regiones r
+       join provincias p on p.region_id = r.region_id;`
     ); //field is optional
     // console.log(row);
     return row as IProvince[];

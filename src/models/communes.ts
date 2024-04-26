@@ -1,7 +1,7 @@
 export interface ICommune {
   idComuna?: string;
-  idProvincia?: string;
   nombreComuna?: string;
+  nombreProvincia?: string;
 }
 export interface IRegion {
   idRegion?: string;
@@ -11,4 +11,6 @@ export interface IRegion {
 export interface IProvince {
   idProvincia?: string;
   nombreProvincia?: string;
+  nombreRegion?: string;
+  regionOrdinal?: string;
 }
