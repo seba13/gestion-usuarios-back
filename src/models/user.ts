@@ -8,4 +8,8 @@ export interface IUser {
   fecModificacion?: string;
 }
 
-export type UserEmail = string;
+export interface IEmail {
+  correo: string;
+  idEmpleado: string;
+}
+export type TEmail = string;

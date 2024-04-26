@@ -1,7 +1,8 @@
 import { UserRepository } from '../repository/user.repository';
-import { IpUtils, Password, ServerResponse } from '../utils';
+import { IpUtils, Password, ServerResponse, UsersUtils } from '../utils';
 import {
   HttpStatus,
+  IEmail,
   IPayloadType,
   IResponse,
   IToken,
@@ -10,12 +11,53 @@ import {
   TToken,
 } from '../models';
 import { v4 as uuid } from 'uuid';
+import { Request } from 'express';
 export class AuthService {
   private repository: UserRepository;
 
   constructor(repository: UserRepository = new UserRepository()) {
     this.repository = repository;
   }
+
+  public async findEmailToRecover(req: Request): Promise<IResponse> {
+    const { correo } = req.body;
+    //validar si existe el email del usuario
+    const userEmail: IEmail[] = await this.repository.getUserEmail(correo);
+    // console.log(userEmail[0].correo);
+    // console.log(userEmail[0].idPersona);
+    if (!userEmail[0] || !userEmail[0].correo) {
+      return ServerResponse.Error('Correo no existe.');
+    }
+    // generar nueva contraseña aqui
+    const newTemporalPass = await UsersUtils.generateNewPassword();
+    // actualizar en bd
+    const responseUpdate = await this.repository.updateById(
+      userEmail[0].idEmpleado,
+      newTemporalPass.encrypted
+    );
+    // console.log(userEmail[0].idEmpleado);
+    if (responseUpdate.affectedRows === 0) {
+      return ServerResponse.Error('Error al actualizar contraseña..');
+    }
+    console.log('NEW TEMP PASS: ', newTemporalPass);
+    //generar email
+    const emailBody = {
+      subject: 'Recuperacion de contraseña - Sistema GP.',
+      text: 'Te adjuntamos la nueva contraseña generada para que ingreses al sistema.',
+      body: `Nueva contraseña generada por el sistema: ${newTemporalPass.password} `,
+    };
+    const emailResponse = await ServerResponse.sendEmail(
+      emailBody,
+      userEmail[0].correo
+    );
+    //validar email
+    if (!emailResponse) {
+      return ServerResponse.Error('Error al enviar el correo');
+    }
+    //enviar respuesta
+    return ServerResponse.Ok('Email envido.✅');
+  }
+
   public async verifyCookieToken(token: TToken): Promise<IResponse> {
     const verifyTokenSign: HttpStatus =
       await ServerResponse.verifyTokenSign(token);
@@ -23,6 +65,7 @@ export class AuthService {
       ? ServerResponse.Ok('Token firmado valido.')
       : ServerResponse.Error('Token firma invalida.');
   }
+  /////esto se debe refactorizar??
   public async verifyToken(token: TToken): Promise<IResponse> {
     // VALIDAR LA FIRMA
     const verifyTokenSign = await ServerResponse.verifyTokenSign(token);
@@ -130,13 +173,13 @@ export class AuthService {
       console.log('TOKEN GENERADO');
       ServerResponse.generateCookie(res, token);
       //aca enviar el email
-      if (
-        !(await ServerResponse.sendEmail(token, 'fabian.niclous@gmail.com'))
-      ) {
-        return ServerResponse.ErrorInternalServer(
-          'No se pudo enviar el link de autorizacion.'
-        );
-      }
+      // if (
+      //   !(await ServerResponse.sendEmail(token, 'fabian.niclous@gmail.com'))
+      // ) {
+      //   return ServerResponse.ErrorInternalServer(
+      //     'No se pudo enviar el link de autorizacion.'
+      //   );
+      // }
       return ServerResponse.Ok('Autenticacion correcta');
     } catch (error) {
       console.log('entra acá');

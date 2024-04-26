@@ -5,7 +5,6 @@ import {
   IToken,
   TSecretKey,
   TToken,
-  UserEmail,
 } from '../models';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
@@ -15,6 +14,7 @@ export class ServerResponse {
     const response = jwt.verify(
       token,
       process.env.JWT_KEY as TSecretKey,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (err: any, decoded: any) => {
         if (err) {
           // El token no es válido
@@ -25,7 +25,10 @@ export class ServerResponse {
     );
     return response;
   }
-  public static async sendEmail(token: IToken | any, toEmail: UserEmail) {
+  public static async sendEmail(email: any, toEmail: string) {
+    if (!email || !toEmail) {
+      console.log('No se pudo enviar el correo');
+    }
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
@@ -36,12 +39,14 @@ export class ServerResponse {
       },
     });
     // send mail with defined transport object
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const emailBody = {
-      from: `"Sistema GP 👻" <${process.env.EMAIL_USER}>`, // sender address
+      from: `"Sistema GP👻" <${process.env.EMAIL_USER}>`, // sender address
       to: `${toEmail}`, // list of receivers
-      subject: 'Link de acceso ✔', // Subject line
-      text: 'aca esta tu link para poder acceder al portal.', // plain text body
-      html: `<b>http://localhost:5173/accesLink?token=${token}</b>`, // html body
+      subject: `${email.subject}`, // Subject line
+      text: `${email.text}`, // plain text body
+      html: `<b>${email.body}</b>`, // html body
     };
     const info = await transporter.sendMail(emailBody);
     if (!info.accepted) {

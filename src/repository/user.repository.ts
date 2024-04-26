@@ -1,6 +1,6 @@
 import { ResultSetHeader } from 'mysql2';
 import pool from '../config/db';
-import { ITokenInfo, IUser, TToken } from '../models';
+import { ITokenInfo, IUser, TToken, IEmail, TEmail } from '../models';
 
 export class UserRepository {
   private promise;
@@ -13,6 +13,21 @@ export class UserRepository {
 
   //   return row as IUser[];
   // }
+
+  public async getUserEmail(email: TEmail): Promise<IEmail[]> {
+    const [row] = await this.promise.query(
+      `SELECT d.correo, em.id_empleado AS idEmpleado
+      FROM personas p
+      JOIN personas_detalles pd ON pd.id_persona = p.id_persona
+      JOIN detalles d ON d.id_detalle = pd.id_detalle
+      JOIN empleados em on em.id_persona=p.id_persona
+      WHERE d.correo=?;
+      `,
+      [email]
+    ); //field is optional
+
+    return row as IEmail[];
+  }
 
   public async getAll(): Promise<IUser[]> {
     const [row] = await this.promise.query('SELECT * FROM usuarios'); //field is optional
@@ -34,7 +49,17 @@ export class UserRepository {
     // console.log(row);
     return row as ResultSetHeader;
   }
-  public async update(
+  public async updateById(
+    idEmployee: string,
+    newPassword: string
+  ): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query(
+      'UPDATE usuarios SET contrasena=? WHERE id_empleado=?',
+      [newPassword, idEmployee]
+    ); //field is optional
+    return row as ResultSetHeader;
+  }
+  public async updateByUsername(
     username: string,
     newPassword: string
   ): Promise<ResultSetHeader> {

@@ -39,10 +39,8 @@ export class UsersService {
   }
 
   public async update(user: string, newPassword: string): Promise<IResponse> {
-    const resultUpdate: ResultSetHeader = await this.repository.update(
-      user,
-      newPassword
-    );
+    const resultUpdate: ResultSetHeader =
+      await this.repository.updateByUsername(user, newPassword);
     console.log(user);
     console.log(newPassword);
     if (resultUpdate.affectedRows === 0) {

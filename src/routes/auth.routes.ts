@@ -17,6 +17,11 @@ authRouter.get(
   controller.verifyIncomingToken
 ); //verify?token=238127ahsdsjashd
 authRouter.post(
+  '/recoveryPassword',
+  AuthDTO.validateEmailDTO,
+  AuthController.restorePassword
+);
+authRouter.post(
   '/auth-user',
   AuthDTO.validateLoginDTO,
   AuthController.authenticate
