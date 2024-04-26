@@ -61,7 +61,7 @@ export class ServerResponse {
   public static generateToken(payload: IPayloadType): IToken {
     try {
       const token = jwt.sign(payload, process.env.JWT_KEY as TSecretKey, {
-        expiresIn: '3m',
+        expiresIn: '20m',
       });
       console.log('TOKEN: ', token);
       return token as any as IToken;
