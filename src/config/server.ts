@@ -4,6 +4,7 @@ import {
   usersRouter,
   personsRouter,
   employeeRouter,
+  communesRouter,
 } from '../routes';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -27,6 +28,7 @@ export class Server {
     this.app.use(usersRouter);
     this.app.use(employeeRouter);
     this.app.use(personsRouter);
+    this.app.use(communesRouter);
   }
 
   listen() {
