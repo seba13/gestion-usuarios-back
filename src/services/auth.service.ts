@@ -138,7 +138,8 @@ export class AuthService {
       }
       const { idUsuario } = userData[0];
       const payload: IPayloadType = {
-        userId: idUsuario,
+        idUsuario: idUsuario,
+        usuario: usuario,
         createdAt: new Date().toDateString(),
       };
       const token: IToken = ServerResponse.generateToken(payload);

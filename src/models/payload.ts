@@ -1,5 +1,6 @@
 export interface IPayloadType {
   // Define la estructura de tu payload aquí
-  userId: string;
+  idUsuario: string;
+  usuario: string;
   createdAt?: string;
 }
