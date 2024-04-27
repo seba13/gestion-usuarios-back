@@ -8,6 +8,7 @@ import {
 } from '../routes';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import chargesRoutes from '../routes/charges.routes';
 
 export class Server {
   port: string | number;
@@ -29,6 +30,7 @@ export class Server {
     this.app.use(employeeRouter);
     this.app.use(personsRouter);
     this.app.use(communesRouter);
+    this.app.use(chargesRoutes);
   }
 
   listen() {

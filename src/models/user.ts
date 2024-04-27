@@ -14,3 +14,8 @@ export interface IEmail {
   idEmpleado: string;
 }
 export type TEmail = string;
+
+export interface ICharge {
+  idCargo: string;
+  cargo: string;
+}

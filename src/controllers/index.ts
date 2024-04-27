@@ -3,3 +3,4 @@ export { UsersController } from './users.controller';
 export { PersonsController } from './persons.controller';
 export { EmployeeController } from './employee.controller';
 export { CommuneController } from './communes.controller';
+export { ChargesController } from './charges.controller';

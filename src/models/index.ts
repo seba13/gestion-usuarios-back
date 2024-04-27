@@ -1,4 +1,4 @@
-export { IUser, IEmail, TEmail } from './user';
+export { IUser, IEmail, TEmail, ICharge } from './user';
 export { ILoginUser } from './loginUser';
 export { IResponse } from './serverResponse';
 export { IPerson } from './persons';
