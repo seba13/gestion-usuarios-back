@@ -36,4 +36,19 @@ export class UsersUtils {
     const newPassword = await this.updatePassword(cutString);
     return { password: cutString, encrypted: newPassword };
   }
+  public static async generateCapCode() {
+    // Genera un número aleatorio entre 1 y 100
+    // const numeroAleatorio = Math.floor(Math.random() * 100) + 1;
+    let myNumbers: any = [];
+    for (let index = 0; index < 20; index++) {
+      const randomNum = Math.floor(Math.random() * 100) + 1;
+      myNumbers = [...myNumbers, randomNum];
+    }
+    let newString: any = '';
+    for (let index = 0; index < myNumbers.length; index++) {
+      newString += `${myNumbers[index]}`;
+    }
+    const cutString = newString.slice(0, 4);
+    return cutString;
+  }
 }

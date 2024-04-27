@@ -11,15 +11,15 @@ authRouter.get(
   TokenDTO.validateCookieDTO,
   controller.verifyCookieToken
 );
-authRouter.get(
-  '/verifyAccess',
-  TokenDTO.validateTokenDTO,
-  controller.verifyIncomingToken
-); //verify?token=238127ahsdsjashd
 authRouter.post(
   '/recoveryPassword',
   AuthDTO.validateEmailDTO,
   AuthController.restorePassword
+);
+authRouter.post(
+  '/verifyCode',
+  AuthDTO.validateCapCodeDTO,
+  AuthController.validateCapCode
 );
 authRouter.post(
   '/auth-user',

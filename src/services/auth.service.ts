@@ -3,12 +3,10 @@ import { IpUtils, Password, ServerResponse, UsersUtils } from '../utils';
 import {
   HttpStatus,
   IEmail,
-  IPayloadType,
   IResponse,
-  IToken,
-  ITokenInfo,
   IUser,
   TToken,
+  IPayloadType,
 } from '../models';
 import { v4 as uuid } from 'uuid';
 import { Request } from 'express';
@@ -58,6 +56,20 @@ export class AuthService {
     return ServerResponse.Ok('Email envido.✅');
   }
 
+  public async verifyCapCode(req: Request): Promise<IResponse> {
+    const { codigo } = req.body;
+    const token: TToken = req.cookies['cookie-token'];
+    const isValid = await this.repository.getCodeCap(codigo, token);
+    const isDisabled = await this.repository.disableToken(token);
+    if (isDisabled.affectedRows === 0) {
+      return ServerResponse.Error('ERror aca');
+    }
+    if (isValid[0].existe === 0) {
+      console.log(isValid);
+      return ServerResponse.Unauthorized('Codigo cap invalido.');
+    }
+    return ServerResponse.Ok('Codigo cap valido.');
+  }
   public async verifyCookieToken(token: TToken): Promise<IResponse> {
     const verifyTokenSign: HttpStatus =
       await ServerResponse.verifyTokenSign(token);
@@ -98,16 +110,16 @@ export class AuthService {
 
   public async authenticate(res: any, req: any): Promise<IResponse> {
     //REFACTORIZAR TODO ESTO
+    //AGREGAR CODIGO CAP DE 4 DIGITOS DE VERIFICACION
     try {
-      const { usuario, contrasena } = req.body;
-      const userData: IUser[] = await this.repository.getByUsername(usuario);
-      //rescatar el log de intento de sesion
-      const clientIp = IpUtils.getIp(req);
+      const { usuario, contrasena } = req.body; //Destructurar
+      const userData: IUser[] = await this.repository.getByUsername(usuario); //Buscar usuario
+      //Guardar log de intento de sesion
       this.repository.saveLogLogin({
         newId: uuid(),
         timestamp: new Date(),
         username: usuario,
-        ip: clientIp,
+        ip: IpUtils.getIp(req),
       });
       if (!userData[0] || !userData[0].usuario) {
         return ServerResponse.Unauthorized('usuario y contraseña invalidos');
@@ -136,32 +148,33 @@ export class AuthService {
       if (responseActivate.affectedRows === 0) {
         return ServerResponse.Error('Error al iniciar sesion.');
       }
-      const { idUsuario } = userData[0];
+      const { idUsuario, correo } = userData[0];
       const payload: IPayloadType = {
         idUsuario: idUsuario,
         usuario: usuario,
-        createdAt: new Date().toDateString(),
       };
-      const token: IToken = ServerResponse.generateToken(payload);
+      const token: TToken = ServerResponse.generateToken(payload);
       // console.log('INTERFAZ TOKEN:', token);
       if (!token && typeof token !== 'string') {
         return ServerResponse.Error();
       }
       //falta guardar la token en la bd
-      const tokenInfo: ITokenInfo = {
-        id: uuid(),
+      const capCode = await UsersUtils.generateCapCode();
+      const tokenInfo = {
+        idToken: uuid(),
+        idUsuario: idUsuario,
         token: token,
-        userId: idUsuario,
-        createdAt: new Date().toDateString(),
+        codigoCap: capCode,
+        fechaCreacion: new Date().toDateString(),
       };
       const sessionInfo = {
         newId: uuid(),
         userId: idUsuario,
         timestamp: new Date(),
-        ip: clientIp,
-        idToken: tokenInfo.id,
+        ip: IpUtils.getIp(req),
+        idToken: tokenInfo.idToken,
       };
-      const saveTokenResponse = await this.repository.saveToken(tokenInfo); // aca va
+      const saveTokenResponse = await this.repository.saveToken(tokenInfo);
 
       if (saveTokenResponse.affectedRows === 0 || !saveTokenResponse) {
         return ServerResponse.Error();
@@ -171,17 +184,23 @@ export class AuthService {
       if (saveSessionResponse.affectedRows === 0 || !saveSessionResponse) {
         ServerResponse.Error();
       }
-      console.log('TOKEN GENERADO');
+
+      //'el token se debe generar post login, una vez confirmado el codigo cap, se debe enviar el token'
       ServerResponse.generateCookie(res, token);
       //aca enviar el email
-      // if (
-      //   !(await ServerResponse.sendEmail(token, 'fabian.niclous@gmail.com'))
-      // ) {
-      //   return ServerResponse.ErrorInternalServer(
-      //     'No se pudo enviar el link de autorizacion.'
-      //   );
-      // }
-      return ServerResponse.Ok('Autenticacion correcta');
+      const body = {
+        subject: 'Codigo de autorizacion 🔐',
+        text: 'Te enviamos tu codigo de 4 digitos...',
+        body: `Tu codigo secreto de 4 digitos es:   ${capCode}`,
+      };
+      console.log(body);
+      const sendEmail = await ServerResponse.sendEmail(body, correo);
+      if (!sendEmail) {
+        return ServerResponse.ErrorInternalServer(
+          'No se pudo enviar el codigo de autorizacion.'
+        );
+      }
+      return ServerResponse.Ok('Codigo cap enviado');
     } catch (error) {
       console.log('entra acá');
 

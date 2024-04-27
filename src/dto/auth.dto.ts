@@ -5,6 +5,39 @@ import Ajv from 'ajv';
 import addErrors from 'ajv-errors';
 
 export class AuthDTO {
+  public static validateCapCodeDTO(
+    req: Request | any,
+    res: Response,
+    next: NextFunction
+  ): any {
+    // de manera regular con la libreria
+    const dataRequired = req.body;
+    const schema = {
+      type: 'object',
+      properties: {
+        codigo: { type: 'string' },
+      },
+      required: ['codigo'],
+      additionalProperties: false,
+    };
+
+    const ajv: Ajv = new Ajv({ allErrors: true });
+    addErrors(ajv);
+    const validate = ajv.compile(schema);
+    const isDtoValid = validate(dataRequired);
+    if (!isDtoValid) {
+      res
+        .status(HttpStatus.ERROR)
+        .json(
+          ServerResponse.Error(
+            ajv.errorsText(validate.errors, { separator: '\n' })
+          )
+        );
+    } else {
+      console.log('DTO SUCCESS.');
+      next();
+    }
+  }
   public static validateEmailDTO(
     req: Request | any,
     res: Response,

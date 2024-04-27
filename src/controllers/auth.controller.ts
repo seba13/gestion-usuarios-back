@@ -2,6 +2,21 @@ import { HttpStatus, TToken } from '../models';
 import { AuthService } from '../services/';
 import { Request, Response } from 'express';
 export class AuthController {
+  public static async validateCapCode(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    try {
+      const validateCapCode = await new AuthService().verifyCapCode(req);
+      // const emailResponse: boolean = ServerResponse.sendEmail();
+      return res.status(validateCapCode.code).json(validateCapCode);
+    } catch (error) {
+      console.error('ERROR: ', error);
+      return res
+        .status(HttpStatus.ERROR)
+        .json('Error al recuperar contraseña.');
+    }
+  }
   public static async restorePassword(
     req: Request,
     res: Response

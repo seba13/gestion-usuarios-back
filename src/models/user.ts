@@ -4,12 +4,13 @@ export interface IUser {
   contrasena: string;
   rol: string;
   activo: number | any;
+  correo: TEmail;
   fecCreacion?: string;
   fecModificacion?: string;
 }
 
 export interface IEmail {
-  correo: string;
+  correo: TEmail;
   idEmpleado: string;
 }
 export type TEmail = string;

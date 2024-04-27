@@ -2,7 +2,6 @@ import {
   HttpStatus,
   IPayloadType,
   IResponse,
-  IToken,
   TSecretKey,
   TToken,
 } from '../models';
@@ -44,7 +43,7 @@ export class ServerResponse {
     const emailBody = {
       from: `"Sistema GP👻" <${process.env.EMAIL_USER}>`, // sender address
       to: `${toEmail}`, // list of receivers
-      subject: `${email.subject}`, // Subject line
+      subject: email.subject, // Subject line
       text: `${email.text}`, // plain text body
       html: `<b>${email.body}</b>`, // html body
     };
@@ -63,13 +62,13 @@ export class ServerResponse {
     });
     console.log('COOKIE CREADA.');
   }
-  public static generateToken(payload: IPayloadType): IToken {
+  public static generateToken(payload: IPayloadType): string {
     try {
       const token = jwt.sign(payload, process.env.JWT_KEY as TSecretKey, {
         expiresIn: '20m',
       });
       console.log('TOKEN: ', token);
-      return token as any as IToken;
+      return token as string;
     } catch (error) {
       console.error('Error al generar el token:', error);
       throw error; // Puedes manejar el error según tus necesidades

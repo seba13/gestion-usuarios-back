@@ -1,15 +1,12 @@
-export interface IToken {
-  token: string;
-  expired?: number;
-}
-
-export interface ITokenInfo {
-  id?: string;
-  token?: string | any;
-  createdAt?: string;
-  expiresAt?: string;
-  userId?: string;
+export interface Token {
+  payload: IPayloadType;
 }
 
 export type TSecretKey = string | any;
 export type TToken = string;
+export interface IPayloadType {
+  // Define la estructura de tu payload aquí
+  idUsuario: string;
+  usuario: string;
+  fecCreacion?: string;
+}

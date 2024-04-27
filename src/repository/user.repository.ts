@@ -1,6 +1,6 @@
 import { ResultSetHeader } from 'mysql2';
 import pool from '../config/db';
-import { ITokenInfo, IUser, TToken, IEmail, TEmail } from '../models';
+import { IUser, TToken, IEmail, TEmail } from '../models';
 
 export class UserRepository {
   private promise;
@@ -28,14 +28,42 @@ export class UserRepository {
 
     return row as IEmail[];
   }
+  public async getEmail(email: TEmail): Promise<IEmail[]> {
+    const [row] = await this.promise.query(
+      `SELECT d.correo, em.id_empleado AS idEmpleado
+      FROM personas p
+      JOIN personas_detalles pd ON pd.id_persona = p.id_persona
+      JOIN detalles d ON d.id_detalle = pd.id_detalle
+      JOIN empleados em on em.id_persona=p.id_persona
+      JOIN usuarios us on us.id_empleado=em.id_empleado
+      WHERE us.usuario=?;
+      `,
+      [email]
+    ); //field is optional
 
+    return row as IEmail[];
+  }
+
+  public async getCodeCap(codigo: string, token: string): Promise<any> {
+    const [row] = await this.promise.query(
+      `SELECT count(*) as existe FROM tokens where codigoCap=?`,
+      [codigo, token]
+    ); //field is optional
+    return row;
+  }
   public async getAll(): Promise<IUser[]> {
     const [row] = await this.promise.query('SELECT * FROM usuarios'); //field is optional
     return row as IUser[];
   }
   public async getByUsername(username: string): Promise<IUser[]> {
     const [row] = await this.promise.query(
-      'SELECT id_usuario as idUsuario, usuario, contrasena, activo, rol ,fec_creacion as fecCreacion, ultimo_acceso as ultimoAcceso FROM usuarios where usuario = ?',
+      `SELECT id_usuario as idUsuario, usuario, correo, contrasena, activo, rol ,fec_creacion as fecCreacion, ultimo_acceso as ultimoAcceso 
+      FROM usuarios u
+      JOIN empleados em on em.id_empleado=u.id_empleado
+      JOIN personas p on p.id_persona=em.id_persona
+      JOIN personas_detalles pd on pd.id_persona=em.id_persona
+      JOIN detalles d on d.id_detalle=pd.id_detalle
+      where u.usuario = ?;`,
       [username]
     ); //field is optional
     return row as IUser[];
@@ -84,11 +112,12 @@ export class UserRepository {
     ); //field is optional
     return row as ResultSetHeader;
   }
-  public async saveToken(token: ITokenInfo): Promise<ResultSetHeader> {
-    const [row] = await this.promise.query('call crearToken(?,?,?);', [
-      token.id,
+  public async saveToken(token: any): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query('call crearToken(?,?,?,?);', [
+      token.idToken,
       token.token,
-      token.userId,
+      token.idUsuario,
+      token.codigoCap,
     ]); //field is optional
     return row as ResultSetHeader;
   }
@@ -121,7 +150,7 @@ export class UserRepository {
   }
   public async disableToken(token: TToken): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
-      'UPDATE tokens SET utilizado=1, expirado = 1 where token=?',
+      'UPDATE tokens SET utilizado = 1, expirado = 1 WHERE token = ?;',
       [token]
     ); //field is optional
     return row as ResultSetHeader;
