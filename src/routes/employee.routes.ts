@@ -22,5 +22,10 @@ employeeRouter.post(
   middlewareDTO.validateNewEmployeeDTO,
   controller.save
 );
+employeeRouter.patch(
+  '/empleado',
+  middlewareDTO.validateUpdateEmployeeDTO,
+  controller.update
+);
 
 export default employeeRouter;

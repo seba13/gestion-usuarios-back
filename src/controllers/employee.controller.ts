@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { HttpStatus, IResponse } from '../models';
+import { HttpStatus, IEmployee, IResponse } from '../models';
 import { EmployeeService } from '../services/employee.service';
+import { EmployeeUtils, PersonsUtils } from '../utils';
 export class EmployeeController {
   public async getAll(req: Request, res: Response): Promise<Response> {
     try {
@@ -41,19 +42,16 @@ export class EmployeeController {
       return res.status(HttpStatus.ERROR).json(error);
     }
   }
-  //   public async update(req: Request, res: Response): Promise<Response> {
-  //     try {
-  //       const newPersonInfo: IPerson = PersonsUtils.updateInfo(
-  //         req.body,
-  //         req.params.idPersona
-  //       );
-  //       const updateResponse: IResponse = await new PersonsService().update(
-  //         newPersonInfo
-  //       );
-  //       return res.status(updateResponse.code).json(updateResponse);
-  //     } catch (error) {
-  //       console.log(error);
-  //       return res.status(HttpStatus.ERROR).send('1Error al actualizar datos.');
-  //     }
-  //   }
+  public async update(req: Request, res: Response): Promise<Response> {
+    try {
+      const newPersonInfo: IEmployee = EmployeeUtils.updateEmployee(req);
+      const updateResponse: IResponse = await new EmployeeService().update(
+        newPersonInfo
+      );
+      return res.status(updateResponse.code).json(updateResponse);
+    } catch (error) {
+      console.log(error);
+      return res.status(HttpStatus.ERROR).send('1Error al actualizar datos.');
+    }
+  }
 }

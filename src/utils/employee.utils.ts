@@ -1,6 +1,5 @@
 import { v4 as uuid } from 'uuid';
 import { IEmployee } from '../models/employee';
-import PDFDocument from 'pdfkit';
 export class EmployeeUtils {
   public static generateNewEmployee(body: any): IEmployee {
     const {
@@ -22,6 +21,30 @@ export class EmployeeUtils {
     } = body;
     const newEmployee: IEmployee = {
       idEmpleado: uuid(),
+      nombre: nombre,
+      paterno: paterno,
+      materno: materno,
+      fecNac: fecNac,
+      rut: rut,
+      dv: dv,
+      sexo: sexo,
+      estadoCivil: estadoCivil,
+      correo: correo,
+      calle: calle,
+      numero: numero,
+      telefono: telefono,
+      profesion: profesion,
+      region: region,
+      comuna: comuna,
+      estado: 'f8782666-ebbd-22uu-nn87-7c4d8fb9ed51',
+      fecIngreso: new Date().toDateString(),
+      fecDespido: '',
+    };
+    return newEmployee;
+  }
+  public static updateEmployee(req: any): IEmployee {
+    const {
+      idEmpleado,
       nombre,
       paterno,
       materno,
@@ -34,26 +57,31 @@ export class EmployeeUtils {
       calle,
       numero,
       telefono,
-      profesion,
       region,
       comuna,
-      estado: 'f8782666-ebbd-22uu-nn87-7c4d8fb9ed51',
+      profesion,
+      estado,
+    } = req.body;
+    const newInfo: IEmployee = {
+      idEmpleado: idEmpleado,
+      nombre: nombre,
+      paterno: paterno,
+      materno: materno,
+      fecNac: fecNac,
+      rut: rut,
+      dv: dv,
+      sexo: sexo,
+      estadoCivil: estadoCivil,
+      correo: correo,
+      calle: calle,
+      numero: numero,
+      telefono: telefono,
+      profesion: profesion,
+      region: region,
+      comuna: comuna,
+      // estado: 'f8782666-ebbd-22uu-nn87-7c4d8fb9ed51',
+      estado: estado,
     };
-    return newEmployee;
-  }
-
-  public static async buildPDF(dataCallback: any, endCallback: any) {
-    const doc = new PDFDocument();
-    doc.on('data', dataCallback);
-    doc.on('end', endCallback);
-    doc.fontSize(25).text('hello world', 100, 100);
-    doc
-      .moveTo(0, 20)
-      .lineTo(100, 160)
-      .quadraticCurveTo(130, 200, 150, 120)
-      .bezierCurveTo(190, -40, 200, 200, 300, 150)
-      .lineTo(400, 90)
-      .stroke();
-    doc.end();
+    return newInfo;
   }
 }

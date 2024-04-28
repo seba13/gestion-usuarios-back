@@ -15,8 +15,8 @@ export class PersonsUtils {
     };
     return newPerson;
   }
-  public static updateInfo(body: any): IPerson {
-    const { nombre, paterno, materno, fecNac, rut, dv, sexo } = body;
+  public static updateInfo(req: any): IPerson {
+    const { nombre, paterno, materno, fecNac, rut, dv, sexo } = req.body;
     const newPersonInfo: IPerson = {
       nombre,
       paterno,

@@ -1,6 +1,7 @@
 import { EmployeeRepository } from '../repository';
 import { EmployeeUtils, PersonsUtils, ServerResponse } from '../utils';
 import { IPerson, IResponse, IEmployee } from '../models';
+import { ResultSetHeader } from 'mysql2';
 export class EmployeeService {
   private repository: EmployeeRepository;
 
@@ -57,13 +58,13 @@ export class EmployeeService {
     }
   }
 
-  // public async update(newPersonInfo: IPerson): Promise<IResponse> {
-  //   console.log(newPersonInfo);
-  //   const resultUpdate: ResultSetHeader =
-  //     await this.repository.update(newPersonInfo);
-  //   if (resultUpdate.affectedRows === 0 || resultUpdate.affectedRows < 1) {
-  //     return ServerResponse.Error('Error al actualizar datos');
-  //   }
-  //   return ServerResponse.Ok('Cambios realizados');
-  // }
+  public async update(newEmployeeInfo: IEmployee): Promise<IResponse> {
+    const resultUpdate: ResultSetHeader =
+      await this.repository.update(newEmployeeInfo);
+    console.log(resultUpdate);
+    if (resultUpdate.affectedRows === 0) {
+      return ServerResponse.Error('Error al actualizar datos');
+    }
+    return ServerResponse.Ok('Cambios realizados');
+  }
 }
