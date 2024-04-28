@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { HttpStatus, IEmployee, IResponse } from '../models';
 import { EmployeeService } from '../services/employee.service';
-import { EmployeeUtils, PersonsUtils } from '../utils';
+import { EmployeeUtils, ServerResponse } from '../utils';
 export class EmployeeController {
   public async getAll(req: Request, res: Response): Promise<Response> {
     try {
@@ -49,9 +49,11 @@ export class EmployeeController {
         newPersonInfo
       );
       return res.status(updateResponse.code).json(updateResponse);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      return res.status(HttpStatus.ERROR).send('1Error al actualizar datos.');
+      return res
+        .status(HttpStatus.ERROR)
+        .json(ServerResponse.Error(error.message));
     }
   }
 }

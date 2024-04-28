@@ -81,8 +81,6 @@ export class EmployeeRepository {
     return row as ResultSetHeader;
   }
   public async update(employeeInfo: IEmployee): Promise<ResultSetHeader> {
-    console.log('NUEVA INFO:', employeeInfo.nombre);
-
     const [row] = await this.promise.query(
       `call ActualizarEmpleado(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
       [
@@ -102,7 +100,7 @@ export class EmployeeRepository {
         employeeInfo.profesion,
         employeeInfo.region,
         employeeInfo.comuna,
-        'f0324771-ebbd-11ee-aa6b-7c4d8fb9ed51',
+        employeeInfo.estado,
       ]
     );
 
