@@ -18,6 +18,7 @@ export class EmployeeUtils {
       profesion,
       region,
       comuna,
+      cargo,
     } = body;
     const newEmployee: IEmployee = {
       idEmpleado: uuid(),
@@ -36,7 +37,8 @@ export class EmployeeUtils {
       profesion: profesion,
       region: region,
       comuna: comuna,
-      estado: 'f8782666-ebbd-22uu-nn87-7c4d8fb9ed51',
+      estado: 'f0324771-ebbd-11ee-aa6b-7c4d8fb9ed51',
+      cargo: cargo,
       fecIngreso: new Date().toDateString(),
       fecDespido: '',
     };
@@ -61,6 +63,7 @@ export class EmployeeUtils {
       comuna,
       profesion,
       estado,
+      cargo,
     } = req.body;
     const newInfo: IEmployee = {
       idEmpleado: idEmpleado,
@@ -81,6 +84,7 @@ export class EmployeeUtils {
       comuna: comuna,
       // estado: 'f8782666-ebbd-22uu-nn87-7c4d8fb9ed51',
       estado: estado,
+      cargo: cargo,
     };
     return newInfo;
   }

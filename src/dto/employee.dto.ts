@@ -32,6 +32,7 @@ export class EmployeeDTO {
         estado: { type: 'string' },
         region: { type: 'number' },
         comuna: { type: 'number' },
+        cargo: { type: 'number' },
       },
       required: [
         'idEmpleado',
@@ -49,6 +50,8 @@ export class EmployeeDTO {
         'telefono',
         'region',
         'comuna',
+        'cargo',
+        'profesion',
       ],
       additionalProperties: false,
     };
@@ -96,6 +99,8 @@ export class EmployeeDTO {
         telefono: { type: 'string' },
         region: { type: 'number' },
         comuna: { type: 'number' },
+        cargo: { type: 'number' },
+        profesion: { type: 'string' },
       },
       required: [
         'nombre',
@@ -112,6 +117,8 @@ export class EmployeeDTO {
         'telefono',
         'region',
         'comuna',
+        'cargo',
+        'profesion',
       ],
       additionalProperties: false,
     };

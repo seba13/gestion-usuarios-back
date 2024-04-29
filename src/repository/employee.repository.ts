@@ -11,7 +11,7 @@ export class EmployeeRepository {
   }
   public async getAll(): Promise<IEmployee[]> {
     const [row] = await this.promise.query(`
-    select com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
+    select car.cargo, com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
       p.sexo,detalles.ecv as 'estadoCivil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
       detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
       from personas_detalles pd
@@ -20,12 +20,24 @@ export class EmployeeRepository {
       join estados est on est.id_estado=em.estado_empleado
       join detalles on detalles.id_detalle=pd.id_detalle
       join regiones reg on reg.region_id=detalles.region
-      join comunas com on com.comuna_id=detalles.comuna;`); //field is optional
+      join comunas com on com.comuna_id=detalles.comuna
+      JOIN cargo car on car.id=em.cargo;`); //field is optional
     return row as IEmployee[];
   }
   public async getById(idEmployee: string): Promise<IEmployee> {
     const [row] = await this.promise.query<RowDataPacket[]>(
       `
+      select car.cargo, com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
+      p.sexo,detalles.ecv as 'estadoCivil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
+      detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
+      from personas_detalles pd
+      join personas p on p.id_persona=pd.id_persona
+      join empleados em on em.id_persona=pd.id_persona
+      join estados est on est.id_estado=em.estado_empleado
+      join detalles on detalles.id_detalle=pd.id_detalle
+      join regiones reg on reg.region_id=detalles.region
+      join comunas com on com.comuna_id=detalles.comuna
+      JOIN cargo car on car.id=em.cargo
       where em.id_empleado=?;`,
       [idEmployee]
     );
@@ -34,7 +46,7 @@ export class EmployeeRepository {
   }
   public async getByRut(rutEmployee: string): Promise<IEmployee> {
     const [row] = await this.promise.query<RowDataPacket[]>(
-      `select com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
+      `select  car.cargo,com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
         p.sexo,detalles.ecv as 'estadoCivil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
         detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
         from personas_detalles pd
@@ -44,7 +56,8 @@ export class EmployeeRepository {
         join detalles on detalles.id_detalle=pd.id_detalle
         join regiones reg on reg.region_id=detalles.region
         join comunas com on com.comuna_id=detalles.comuna
-      where p.rut=?;`,
+        JOIN cargo car on car.id=em.cargo
+        where p.rut=?;`,
       [rutEmployee]
     );
 
@@ -55,7 +68,7 @@ export class EmployeeRepository {
     newPerson: IPerson
   ): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
-      'call `NuevoEmpleado`(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);',
+      'call `NuevoEmpleado`(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);',
       [
         newEmployee.idEmpleado,
         newPerson.rut,
@@ -75,6 +88,7 @@ export class EmployeeRepository {
         newEmployee.region,
         newEmployee.comuna,
         newEmployee.estado,
+        newEmployee.cargo,
       ]
     );
 
@@ -82,7 +96,7 @@ export class EmployeeRepository {
   }
   public async update(employeeInfo: IEmployee): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
-      `call ActualizarEmpleado(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+      `call ActualizarEmpleado(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
       [
         employeeInfo.idEmpleado,
         employeeInfo.rut,
@@ -101,6 +115,7 @@ export class EmployeeRepository {
         employeeInfo.region,
         employeeInfo.comuna,
         employeeInfo.estado,
+        employeeInfo.cargo,
       ]
     );
 

@@ -19,6 +19,7 @@ export interface IEmployee {
   fecIngreso?: string;
   fecDespido?: string;
   estado: string;
+  cargo?: string;
 }
 
 export type Employee = {
