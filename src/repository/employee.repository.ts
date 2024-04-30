@@ -94,9 +94,10 @@ export class EmployeeRepository {
 
     return row as ResultSetHeader;
   }
-  public async update(employeeInfo: IEmployee): Promise<ResultSetHeader> {
+  public async update(employeeInfo: any): Promise<ResultSetHeader> {
+    // call `ActualizarEmpleado`(?,?, ?,?,?,?,?,?,?,?,?, ?, ?, ?, ?,?,?, ?);
     const [row] = await this.promise.query(
-      `call ActualizarEmpleado(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+      'call ActualizarEmpleado(?,?, ?,?,?,?,?,?,?,?,?, ?, ?, ?, ?,?,?, ?);',
       [
         employeeInfo.idEmpleado,
         employeeInfo.rut,
