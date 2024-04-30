@@ -19,6 +19,7 @@ export class EmployeeUtils {
       region,
       comuna,
       cargo,
+      estado,
     } = body;
     const newEmployee: IEmployee = {
       idEmpleado: uuid(),
@@ -37,7 +38,7 @@ export class EmployeeUtils {
       profesion: profesion,
       region: region,
       comuna: comuna,
-      estado: 'f0324771-ebbd-11ee-aa6b-7c4d8fb9ed51',
+      estado: estado,
       cargo: cargo,
       fecIngreso: new Date().toDateString(),
       fecDespido: '',

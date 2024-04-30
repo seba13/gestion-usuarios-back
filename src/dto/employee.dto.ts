@@ -52,6 +52,7 @@ export class EmployeeDTO {
         'comuna',
         'cargo',
         'profesion',
+        'estado',
       ],
       additionalProperties: false,
     };
@@ -101,6 +102,7 @@ export class EmployeeDTO {
         comuna: { type: 'number' },
         cargo: { type: 'number' },
         profesion: { type: 'string' },
+        estado: { type: 'string' },
       },
       required: [
         'nombre',
@@ -119,6 +121,7 @@ export class EmployeeDTO {
         'comuna',
         'cargo',
         'profesion',
+        'estado',
       ],
       additionalProperties: false,
     };
