@@ -11,9 +11,9 @@ export class EmployeeRepository {
   }
   public async getAll(): Promise<IEmployee[]> {
     const [row] = await this.promise.query(`
-    select car.cargo, com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
+    select car.cargo, car.id as idCargo, com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
       p.sexo,detalles.ecv as 'estadoCivil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
-      detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
+      detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado, est.id_estado as idEstado 
       from personas_detalles pd
       join personas p on p.id_persona=pd.id_persona
       join empleados em on em.id_persona=pd.id_persona
@@ -27,9 +27,9 @@ export class EmployeeRepository {
   public async getById(idEmployee: string): Promise<IEmployee> {
     const [row] = await this.promise.query<RowDataPacket[]>(
       `
-      select car.cargo, com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
+      select car.cargo, car.id as idCargo, com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
       p.sexo,detalles.ecv as 'estadoCivil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
-      detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
+      detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado, est.id_estado as idEstado
       from personas_detalles pd
       join personas p on p.id_persona=pd.id_persona
       join empleados em on em.id_persona=pd.id_persona
@@ -46,9 +46,9 @@ export class EmployeeRepository {
   }
   public async getByRut(rutEmployee: string): Promise<IEmployee> {
     const [row] = await this.promise.query<RowDataPacket[]>(
-      `select  car.cargo,com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
+      `select  car.cargo, car.id as idCargo,com.comuna_id as idComuna, com.provincia_id as idProvincia, reg.region_id as idRegion,em.id_empleado as idEmpleado, p.nombre, p.apat as paterno, p.amat as materno, p.fec_nac as fecNac, p.rut as rut, p.dv as dv, 
         p.sexo,detalles.ecv as 'estadoCivil', detalles.correo, detalles.calle, detalles.numero, detalles.telefono, 
-        detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado 
+        detalles.profesion, reg.region_nombre as region, com.comuna_nombre as comuna, em.fec_ingreso as fecIngreso, em.fec_despido as fecDespido, est.estado, est.id_estado as idEstado 
         from personas_detalles pd
         join personas p on p.id_persona=pd.id_persona
         join empleados em on em.id_persona=pd.id_persona
