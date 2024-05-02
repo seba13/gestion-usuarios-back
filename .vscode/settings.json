@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "mysql-reportserviceapp.alwaysdata.net",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "Server",
+            "username": "353537",
+            "database": "reportserviceapp_db"
+        }
+    ]
+}

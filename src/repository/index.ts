@@ -3,3 +3,4 @@ export { PersonsRepository } from './persons.repository';
 export { CommunesRepository } from './communes.repository';
 export { ChargesRepository } from './charges.repository';
 export { UserRepository } from './user.repository';
+export { LettersRepository } from './letters.repository';

@@ -1,6 +1,22 @@
 import { v4 as uuid } from 'uuid';
-import { IEmployee } from '../models/employee';
+import { IEmployee, ILetter } from '../models';
 export class EmployeeUtils {
+  public static generateNewLetter(
+    idEmisor: string,
+    idEmpleado: string,
+    idTipoCarta: string,
+    motivo: string
+  ) {
+    const newLetter: ILetter = {
+      idCarta: uuid(),
+      idEmisor: idEmisor,
+      idEmpleado: idEmpleado,
+      motivo: motivo,
+      idTipoCarta: idTipoCarta,
+      fechaEntrega: new Date().toDateString(),
+    };
+    return newLetter;
+  }
   public static generateNewEmployee(body: any): IEmployee {
     const {
       nombre,
