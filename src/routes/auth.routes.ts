@@ -27,7 +27,7 @@ authRouter.post(
   AuthController.authenticate
 );
 authRouter.get(
-  '/exit/:userId',
+  '/exit/:rut',
   AuthDTO.validateExitIdDTO,
   controller.closeSession
 );

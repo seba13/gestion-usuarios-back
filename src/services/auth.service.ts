@@ -100,8 +100,8 @@ export class AuthService {
   }
 
   public async closeSession(req: any): Promise<IResponse> {
-    const { userId } = req.params;
-    const closeSession = await this.repository.closeSession(userId);
+    const { rut } = req.params;
+    const closeSession = await this.repository.closeSession(rut);
     if (closeSession.affectedRows === 0 || !closeSession) {
       return ServerResponse.Error('Error al finalizar sesion.');
     }

@@ -129,8 +129,8 @@ export class UserRepository {
     ]); //field is optional
     return row as ResultSetHeader;
   }
-  public async closeSession(userId: string): Promise<ResultSetHeader> {
-    const [row] = await this.promise.query('call cerrarSesion(?);', [userId]); //field is optional
+  public async closeSession(rut: string): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query('call cerrarSesion(?);', [rut]); //field is optional
     return row as ResultSetHeader;
   }
   public async saveLogLogin(data: any): Promise<ResultSetHeader> {
