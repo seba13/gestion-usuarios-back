@@ -9,20 +9,16 @@ export class LettersRepository {
   }
   public async getLetters(): Promise<ILetter[]> {
     const [row] = await this.promise.query(
-      `SELECT cod_informe as codInforme,
+      `SELECT cod_informe as idCarta,
       id_emisor as idEmisor,
-      em.id_empleado as idEmpleado,
-      nombre as nombre,
-      apat as paterno,
-      amat as materno,
-      concat(rut,"-",dv) as rut,
+      (SELECT CONCAT(p.rut, "-",p.dv) from personas p JOIN empleados em on em.id_persona=p.id_persona where em.id_empleado=inf.id_emisor) as rutEmisor,
       motivo,
       fec_entrega as fecEntrega,
       tipo_carta as idTipoCarta,
       tipo as tipoCarta
-  from empleados em
-      JOIN informes inf on inf.id_empleado = em.id_empleado
-      JOIN personas p on p.id_persona=em.id_persona
+  from empleados empl
+      JOIN informes inf on inf.id_empleado = empl.id_empleado
+      JOIN personas p on p.id_persona=empl.id_persona
       JOIN tipo_informe tf on tf.id=inf.tipo_carta;`
     ); //field is optional
     // console.log(row);
@@ -30,20 +26,16 @@ export class LettersRepository {
   }
   public async getLetterByRut(rut: string): Promise<ILetter[]> {
     const [row] = await this.promise.query(
-      `SELECT cod_informe as codInforme,
+      `SELECT cod_informe as idCarta,
       id_emisor as idEmisor,
-      em.id_empleado as idEmpleado,
-      nombre as nombre,
-      apat as paterno,
-      amat as materno,
-      concat(rut,"-",dv) as rut,
+      (SELECT CONCAT(p.rut, "-",p.dv) from personas p JOIN empleados em on em.id_persona=p.id_persona where em.id_empleado=inf.id_emisor) as rutEmisor,
       motivo,
       fec_entrega as fecEntrega,
       tipo_carta as idTipoCarta,
       tipo as tipoCarta
-  from empleados em
-      JOIN informes inf on inf.id_empleado = em.id_empleado
-      JOIN personas p on p.id_persona=em.id_persona
+  from empleados empl
+      JOIN informes inf on inf.id_empleado = empl.id_empleado
+      JOIN personas p on p.id_persona=empl.id_persona
       JOIN tipo_informe tf on tf.id=inf.tipo_carta
       WHERE p.rut=?
       ;`,
@@ -52,15 +44,18 @@ export class LettersRepository {
     // console.log(row);
     return row as ILetter[];
   }
-  public async saveLetter(newLetter: ILetter): Promise<ResultSetHeader> {
+  public async saveLetter(
+    idEmployee: string,
+    newLetter: ILetter
+  ): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
       `INSERT INTO informes VALUES(?,?,?,?,?,?)`,
       [
         newLetter.idCarta,
-        newLetter.idEmpleado,
+        idEmployee,
         newLetter.idEmisor,
         newLetter.motivo,
-        newLetter.fechaEntrega,
+        newLetter.fecEntrega,
         newLetter.idTipoCarta,
       ]
     ); //field is optional

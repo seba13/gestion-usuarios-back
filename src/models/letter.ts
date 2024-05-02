@@ -1,9 +1,9 @@
 export interface ILetter {
   idCarta?: string;
   idEmisor?: string;
-  idEmpleado?: string;
+  rutEmisor?: string;
   idTipoCarta?: string;
   tipoCarta?: string;
   motivo?: string;
-  fechaEntrega?: string;
+  fecEntrega?: string;
 }

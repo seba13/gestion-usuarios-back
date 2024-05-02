@@ -3,17 +3,15 @@ import { IEmployee, ILetter } from '../models';
 export class EmployeeUtils {
   public static generateNewLetter(
     idEmisor: string,
-    idEmpleado: string,
     idTipoCarta: string,
     motivo: string
   ) {
     const newLetter: ILetter = {
       idCarta: uuid(),
       idEmisor: idEmisor,
-      idEmpleado: idEmpleado,
       motivo: motivo,
       idTipoCarta: idTipoCarta,
-      fechaEntrega: new Date().toDateString(),
+      fecEntrega: new Date().toDateString(),
     };
     return newLetter;
   }

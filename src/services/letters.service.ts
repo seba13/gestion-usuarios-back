@@ -30,12 +30,10 @@ export class LettersService {
     const { motivo, idTipoCarta, idEmisor, idEmpleado } = req.body;
     const newLetter: ILetter = EmployeeUtils.generateNewLetter(
       idEmisor,
-      idEmpleado,
       idTipoCarta,
       motivo
     );
-    console.log('MI CARTA: ', newLetter);
-    const letters = await this.repository.saveLetter(newLetter);
+    const letters = await this.repository.saveLetter(idEmpleado, newLetter);
     if (letters.affectedRows === 0) {
       return ServerResponse.NotFound('No se guardo la carta.');
     } else {
