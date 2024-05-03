@@ -44,7 +44,7 @@ export class Server {
 
   listen() {
     this.app.listen(this.port, () => {
-      console.log(`servidor ejecutandose en: http://localhost:${this.port}`);
+      console.log(`servidor ejecutandose en: ${process.env.VITE_URL_FRONT}`);
     });
   }
 }
