@@ -58,15 +58,16 @@ export class AuthService {
 
   public async verifyCapCode(req: Request): Promise<IResponse> {
     const { codigo } = req.body;
-    const token: TToken = req.cookies['cookie-token'];
+    const token: string = req.cookies['cookie-token'];
     const isValid = await this.repository.getCodeCap(codigo, token);
-    const isDisabled = await this.repository.disableToken(token);
-    if (isDisabled.affectedRows === 0) {
-      return ServerResponse.Error('ERror aca');
-    }
+    const isDisabled = await this.repository.disableCodeCap(codigo);
+    console.log(isDisabled);
     if (isValid[0].existe === 0) {
       console.log(isValid);
       return ServerResponse.Unauthorized('Codigo cap invalido.');
+    }
+    if (isDisabled.affectedRows === 0) {
+      return ServerResponse.Error('Codigo cap expirado.');
     }
     return ServerResponse.Ok('Codigo cap valido.');
   }
@@ -102,7 +103,8 @@ export class AuthService {
   public async closeSession(req: any): Promise<IResponse> {
     const { rut } = req.params;
     const closeSession = await this.repository.closeSession(rut);
-    if (closeSession.affectedRows === 0 || !closeSession) {
+    console.log(closeSession);
+    if (closeSession.affectedRows === 0) {
       return ServerResponse.Error('Error al finalizar sesion.');
     }
     return ServerResponse.Ok('Sesion finalizada.');

@@ -155,4 +155,11 @@ export class UserRepository {
     ); //field is optional
     return row as ResultSetHeader;
   }
+  public async disableCodeCap(code: string): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query(
+      'UPDATE tokens SET utilizado = 1 WHERE codigoCap = ? and utilizado=0;',
+      [code]
+    ); //field is optional
+    return row as ResultSetHeader;
+  }
 }
