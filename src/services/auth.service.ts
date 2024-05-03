@@ -150,11 +150,12 @@ export class AuthService {
       if (responseActivate.affectedRows === 0) {
         return ServerResponse.Error('Error al iniciar sesion.');
       }
-      const { idUsuario, correo, idEmpleado } = userData[0];
+      const { idUsuario, correo, idEmpleado, rut } = userData[0];
       const payload: IPayloadType = {
         idUsuario: idUsuario,
         usuario: usuario,
         idEmpleado: idEmpleado,
+        rut,
       };
       const token: TToken = ServerResponse.generateToken(payload);
       // console.log('INTERFAZ TOKEN:', token);

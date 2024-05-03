@@ -8,6 +8,7 @@ export interface IUser {
   correo: TEmail;
   fecCreacion?: string;
   fecModificacion?: string;
+  rut: string;
 }
 
 export interface IEmail {

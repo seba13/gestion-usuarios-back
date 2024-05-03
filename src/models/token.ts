@@ -10,4 +10,5 @@ export interface IPayloadType {
   idEmpleado: string;
   usuario: string;
   fecCreacion?: string;
+  rut: string;
 }
