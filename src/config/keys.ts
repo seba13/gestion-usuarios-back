@@ -7,6 +7,8 @@ config({
 
 const isProduction: boolean = process.env.IS_PRODUCTION === 'true' || false;
 
+console.log({ isProduction });
+
 export const options: PoolOptions = {
   host: isProduction ? process.env.DB_HOST! : 'localhost',
   database: isProduction ? process.env.DB_NAME! : 'sistema',
