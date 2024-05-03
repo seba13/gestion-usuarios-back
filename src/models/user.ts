@@ -1,5 +1,6 @@
 export interface IUser {
   idUsuario: string;
+  idEmpleado: string;
   usuario: string;
   contrasena: string;
   rol: string;

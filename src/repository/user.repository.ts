@@ -57,7 +57,7 @@ export class UserRepository {
   }
   public async getByUsername(username: string): Promise<IUser[]> {
     const [row] = await this.promise.query(
-      `SELECT id_usuario as idUsuario, usuario, correo, contrasena, activo, rol ,fec_creacion as fecCreacion, ultimo_acceso as ultimoAcceso 
+      `SELECT id_usuario as idUsuario, em.id_empleado as idEmpleado, usuario, correo, contrasena, activo, rol ,fec_creacion as fecCreacion, ultimo_acceso as ultimoAcceso 
       FROM usuarios u
       JOIN empleados em on em.id_empleado=u.id_empleado
       JOIN personas p on p.id_persona=em.id_persona
