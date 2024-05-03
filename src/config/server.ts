@@ -1,3 +1,4 @@
+import { config } from 'dotenv';
 import express from 'express';
 import {
   authRouter,
@@ -10,6 +11,10 @@ import {
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import chargesRoutes from '../routes/charges.routes';
+
+config({
+  path: './.env',
+});
 
 export class Server {
   port: string | number;
@@ -24,7 +29,9 @@ export class Server {
   middlewares() {
     this.app.set('trust proxy', true);
     this.app.use(cookieParser());
-    this.app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+    this.app.use(
+      cors({ origin: process.env.VITE_URL_FRONT, credentials: true })
+    );
     this.app.use(express.json());
     this.app.use(authRouter);
     this.app.use(usersRouter);
