@@ -4,6 +4,7 @@
   "description": "backend sistema de gestión de usuarios",
   "main": "./dist/app.js",
   "scripts": {
+    "build": "tsc ",
     "dev:ts-node-dev": "ts-node-dev ./app.ts",
     "dev": "nodemon app.ts",
     "ts:watch": "tsc --watch",
