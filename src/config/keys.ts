@@ -5,7 +5,7 @@ config({
   path: './.env',
 });
 
-const isProduction: boolean = process.env.NODE_ENV === 'production' || false;
+const isProduction: boolean = process.env.IS_PRODUCTION === 'true' || false;
 
 export const options: PoolOptions = {
   host: isProduction ? process.env.DB_HOST! : 'localhost',
