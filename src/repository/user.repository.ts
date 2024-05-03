@@ -1,4 +1,4 @@
-import { ResultSetHeader } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import pool from '../config/db';
 import { IUser, TToken, IEmail, TEmail } from '../models';
 
@@ -44,10 +44,10 @@ export class UserRepository {
     return row as IEmail[];
   }
 
-  public async getCodeCap(codigo: string, token: string): Promise<any> {
+  public async getCodeCap(codigo: string): Promise<any> {
     const [row] = await this.promise.query(
       `SELECT count(*) as existe FROM tokens where codigoCap=?`,
-      [codigo, token]
+      [codigo]
     ); //field is optional
     return row;
   }
@@ -124,7 +124,7 @@ export class UserRepository {
   public async saveSession(data: any): Promise<ResultSetHeader> {
     const [row] = await this.promise.query('call crearSesion(?,?,?);', [
       data.newId,
-      data.userId,
+      data.idUsuario,
       data.ip,
     ]); //field is optional
     return row as ResultSetHeader;
@@ -148,10 +148,38 @@ export class UserRepository {
     ); //field is optional
     return row as ResultSetHeader;
   }
+  public async getUserDataByCap(cap: string): Promise<RowDataPacket> {
+    const [row] = await this.promise.query(
+      `SELECT us.id_usuario as idUsuario, us.usuario, em.id_empleado as idEmpleado, p.rut  FROM usuarios us
+      JOIN tokens tk on tk.id_usuario=us.id_usuario
+      JOIN empleados em on em.id_empleado=us.id_empleado
+      JOIN personas p on p.id_persona=em.id_persona
+      WHERE tk.codigoCap=?;`,
+      [cap]
+    ); //field is optional
+    return row as RowDataPacket;
+  }
+  public async getToken(token: TToken): Promise<RowDataPacket> {
+    const [row] = await this.promise.query(
+      'select * from tokens where token=?;',
+      [token]
+    ); //field is optional
+    return row as RowDataPacket;
+  }
   public async disableToken(token: TToken): Promise<ResultSetHeader> {
     const [row] = await this.promise.query(
       'UPDATE tokens SET utilizado = 1, expirado = 1 WHERE token = ?;',
       [token]
+    ); //field is optional
+    return row as ResultSetHeader;
+  }
+  public async updateToken(
+    cap: string,
+    token: TToken
+  ): Promise<ResultSetHeader> {
+    const [row] = await this.promise.query(
+      `UPDATE tokens SET token = ? where codigoCap=?;`,
+      [token, cap]
     ); //field is optional
     return row as ResultSetHeader;
   }

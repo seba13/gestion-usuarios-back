@@ -1,20 +1,19 @@
 import { HttpStatus, TToken } from '../models';
 import { AuthService } from '../services/';
 import { Request, Response } from 'express';
+import { ServerResponse } from '../utils';
 export class AuthController {
   public static async validateCapCode(
     req: Request,
     res: Response
   ): Promise<Response> {
     try {
-      const validateCapCode = await new AuthService().verifyCapCode(req);
+      const validateCapCode = await new AuthService().verifyCapCode(req, res);
       // const emailResponse: boolean = ServerResponse.sendEmail();
       return res.status(validateCapCode.code).json(validateCapCode);
     } catch (error) {
       console.error('ERROR: ', error);
-      return res
-        .status(HttpStatus.ERROR)
-        .json('Error al recuperar contraseña.');
+      return res.status(HttpStatus.ERROR).json('Error al validar cap.');
     }
   }
   public static async restorePassword(
@@ -37,6 +36,7 @@ export class AuthController {
     res: Response
   ): Promise<Response> {
     try {
+      //SOLO DEBE AUTENTCAR USUARIO PARA PODER PODER ENVIAR EL CODIGO CAP DE VERIFICACION
       const existsUser = await new AuthService().authenticate(res, req);
       return res.status(existsUser.code).json(existsUser);
     } catch (error) {
@@ -48,9 +48,11 @@ export class AuthController {
     try {
       const sessionResponse = await new AuthService().closeSession(req);
       return res.status(sessionResponse.code).json(sessionResponse);
-    } catch (error) {
+    } catch (error: any) {
       console.error('ERROR: ', error);
-      return res.status(HttpStatus.ERROR).json('Error al cerrar sesion.');
+      return res
+        .status(HttpStatus.ERROR)
+        .json(ServerResponse.Error(error.message));
     }
   }
   public async verifyIncomingToken(req: any, res: any) {

@@ -56,19 +56,94 @@ export class AuthService {
     return ServerResponse.Ok('Email envido.✅');
   }
 
-  public async verifyCapCode(req: Request): Promise<IResponse> {
+  public async verifyCapCode(req: any, res: any): Promise<IResponse> {
+    // //falta guardar la token en la bd
+    // const capCode = await UsersUtils.generateCapCode();
+    // const tokenInfo = {
+    //   idToken: uuid(),
+    //   idUsuario: idUsuario,
+    //   token: token,
+    //   codigoCap: capCode,
+    //   fechaCreacion: new Date().toDateString(),
+    // };
+    // const sessionInfo = {
+    //   newId: uuid(),
+    //   userId: idUsuario,
+    //   timestamp: new Date(),
+    //   ip: IpUtils.getIp(req),
+    //   idToken: tokenInfo.idToken,
+    // };
+    // const saveTokenResponse = await this.repository.saveToken(tokenInfo);
+
+    // if (saveTokenResponse.affectedRows === 0 || !saveTokenResponse) {
+    //   return ServerResponse.Error();
+    // }
+    // const saveSessionResponse = await this.repository.saveSession(sessionInfo);
+    // if (saveSessionResponse.affectedRows === 0 || !saveSessionResponse) {
+    //   ServerResponse.Error();
+    // }
+
+    // //'el token se debe generar post login, una vez confirmado el codigo cap, se debe enviar el token'
+    // ServerResponse.generateCookie(res, token);
+
+    //Se recibe el codigo
     const { codigo } = req.body;
-    const token: string = req.cookies['cookie-token'];
-    const isValid = await this.repository.getCodeCap(codigo, token);
-    const isDisabled = await this.repository.disableCodeCap(codigo);
-    console.log(isDisabled);
+    // const token: string = req.cookies['cookie-token']; //Se recibe el token
+    const isValid = await this.repository.getCodeCap(codigo); //Es valido el codigo
+    const isDisabled = await this.repository.disableCodeCap(codigo); //Deshabilitar por uso unico el codigo cap
     if (isValid[0].existe === 0) {
-      console.log(isValid);
       return ServerResponse.Unauthorized('Codigo cap invalido.');
     }
     if (isDisabled.affectedRows === 0) {
       return ServerResponse.Error('Codigo cap expirado.');
     }
+    //ACA GENERAR UNA BUSQUEDA A LA BD PARA OBTENER DATOS PAL PAYLOAD
+    const dataForPayload: any = await this.repository.getUserDataByCap(codigo);
+    // ACA GENERAR LOGICA DEL TOKEN
+    const payload: IPayloadType = {
+      idUsuario: dataForPayload[0].idUsuario,
+      usuario: dataForPayload[0].usuario,
+      idEmpleado: dataForPayload[0].idEmpleado,
+      rut: dataForPayload[0].rut,
+    };
+    // console.log(payload);
+    const token: TToken = ServerResponse.generateToken(payload); // SE GENERA EL TOKEN
+    if (!token && typeof token !== 'string') {
+      //Se valida el tipo de token
+      return ServerResponse.Error();
+    }
+    //se guarda en la BD
+    const saveTokenResponse = await this.repository.updateToken(codigo, token);
+    if (saveTokenResponse.affectedRows === 0 || !saveTokenResponse) {
+      return ServerResponse.Error();
+    }
+    const tokenFromRepository = await this.repository.getToken(token);
+    //se crea la sesion
+    const sessionInfo = {
+      newId: uuid(),
+      idUsuario: dataForPayload[0].idUsuario,
+      timestamp: new Date().toString(),
+      ip: IpUtils.getIp(req),
+      idToken: tokenFromRepository[0].id,
+    };
+    //se activa el usuario
+    //Llevar
+    console.log('INICIANDO SESION');
+    const responseActivate = await this.repository.activateUserStatus(
+      dataForPayload[0].idUsuario
+    );
+    if (responseActivate.affectedRows === 0) {
+      return ServerResponse.Error('Error al iniciar sesion.');
+    }
+    //*se envia respuesta
+    const saveSessionResponse = await this.repository.saveSession(sessionInfo);
+    if (saveSessionResponse.affectedRows === 0 || !saveSessionResponse) {
+      ServerResponse.Error();
+    }
+
+    //'el token se debe generar post login, una vez confirmado el codigo cap, se debe enviar el token'
+    ServerResponse.generateCookie(res, token);
+
     return ServerResponse.Ok('Codigo cap valido.');
   }
   public async verifyCookieToken(token: TToken): Promise<IResponse> {
@@ -111,8 +186,7 @@ export class AuthService {
   }
 
   public async authenticate(res: any, req: any): Promise<IResponse> {
-    //REFACTORIZAR TODO ESTO
-    //AGREGAR CODIGO CAP DE 4 DIGITOS DE VERIFICACION
+    //ESTE METODO SOLO DEBE RETORNAR EL CODIGO DE AUTORIZACION
     try {
       const { usuario, contrasena } = req.body; //Destructurar
       const userData: IUser[] = await this.repository.getByUsername(usuario); //Buscar usuario
@@ -126,6 +200,8 @@ export class AuthService {
       if (!userData[0] || !userData[0].usuario) {
         return ServerResponse.Unauthorized('usuario y contraseña invalidos');
       }
+      //Existe usuario pero se debe validar la contraseña
+      //Validar contaseña
       const isPasswordValid = await Password.comparePasswords(
         contrasena,
         userData[0].contrasena
@@ -134,6 +210,7 @@ export class AuthService {
         return ServerResponse.Unauthorized('Autenticacion incorrecta');
       }
       /////////////////////////
+      //Si existe sesion activa, se cierra
       if (userData[0].activo === 1) {
         console.log('CERRANDO SESION ACTIVA');
         const responseDisable = await this.repository.disableUserStatus(
@@ -143,54 +220,29 @@ export class AuthService {
           return ServerResponse.Error('Error al iniciar sesion.');
         }
       }
-      console.log('INICIANDO SESION');
-      const responseActivate = await this.repository.activateUserStatus(
-        userData[0].idUsuario
-      );
-      if (responseActivate.affectedRows === 0) {
-        return ServerResponse.Error('Error al iniciar sesion.');
-      }
-      const { idUsuario, correo, idEmpleado, rut } = userData[0];
-      const payload: IPayloadType = {
-        idUsuario: idUsuario,
-        usuario: usuario,
-        idEmpleado: idEmpleado,
-        rut,
-      };
-      const token: TToken = ServerResponse.generateToken(payload);
-      // console.log('INTERFAZ TOKEN:', token);
-      if (!token && typeof token !== 'string') {
-        return ServerResponse.Error();
-      }
-      //falta guardar la token en la bd
+
       const capCode = await UsersUtils.generateCapCode();
+      const { idUsuario, correo } = userData[0];
       const tokenInfo = {
         idToken: uuid(),
         idUsuario: idUsuario,
-        token: token,
+        // token: token,
         codigoCap: capCode,
-        fechaCreacion: new Date().toDateString(),
+        fecCreacion: new Date().toLocaleTimeString(),
       };
-      const sessionInfo = {
-        newId: uuid(),
-        userId: idUsuario,
-        timestamp: new Date(),
-        ip: IpUtils.getIp(req),
-        idToken: tokenInfo.idToken,
-      };
+      // const sessionInfo = {
+      //   newId: uuid(),
+      //   userId: idUsuario,
+      //   timestamp: new Date(),
+      //   ip: IpUtils.getIp(req),
+      //   idToken: tokenInfo.idToken,
+      // };
       const saveTokenResponse = await this.repository.saveToken(tokenInfo);
 
       if (saveTokenResponse.affectedRows === 0 || !saveTokenResponse) {
         return ServerResponse.Error();
       }
-      const saveSessionResponse =
-        await this.repository.saveSession(sessionInfo);
-      if (saveSessionResponse.affectedRows === 0 || !saveSessionResponse) {
-        ServerResponse.Error();
-      }
-
-      //'el token se debe generar post login, una vez confirmado el codigo cap, se debe enviar el token'
-      ServerResponse.generateCookie(res, token);
+      /////////////////////////////////
       //aca enviar el email
       const body = {
         subject: 'Codigo de autorizacion 🔐',
