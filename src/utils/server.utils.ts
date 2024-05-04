@@ -7,7 +7,6 @@ import {
 } from '../models';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
-
 export class ServerResponse {
   public static async verifyTokenSign(token: TToken): Promise<any> {
     // Verificar el token
@@ -61,6 +60,8 @@ export class ServerResponse {
       httpOnly: false, // La cookie solo es accesible en el servidor
       sameSite: 'strict',
       secure: false,
+      // httpOnly: true, // La cookie solo es accesible en el servidor
+      secure: false, // La cookie solo se envía a través de conexiones HTTPS
     });
     console.log('COOKIE CREADA.');
   }
