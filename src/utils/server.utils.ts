@@ -59,8 +59,8 @@ export class ServerResponse {
     res.cookie('cookie-token', data, {
       maxAge: 1200000, // Tiempo de vida de la cookie en milisegundos (aquí, 15 minutos)
       // httpOnly: true, // La cookie solo es accesible en el servidor
-      sameSite: 'Strict',
-      secure: false,
+      sameSite: 'None',
+      secure: true,
     });
     console.log('COOKIE CREADA.');
   }
