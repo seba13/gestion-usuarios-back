@@ -4,14 +4,15 @@ export class EmployeeUtils {
   public static generateNewLetter(
     idEmisor: string,
     idTipoCarta: string,
-    motivo: string
+    motivo: string,
+    fecEntrega: string
   ) {
     const newLetter: ILetter = {
       idCarta: uuid(),
       idEmisor: idEmisor,
       motivo: motivo,
       idTipoCarta: idTipoCarta,
-      fecEntrega: new Date().toDateString(),
+      fecEntrega: fecEntrega,
     };
     return newLetter;
   }

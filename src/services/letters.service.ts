@@ -27,11 +27,12 @@ export class LettersService {
     }
   }
   public async saveLetter(req: any | Request): Promise<IResponse> {
-    const { motivo, idTipoCarta, idEmisor, idEmpleado } = req.body;
+    const { motivo, idTipoCarta, idEmisor, idEmpleado, fecEntrega } = req.body;
     const newLetter: ILetter = EmployeeUtils.generateNewLetter(
       idEmisor,
       idTipoCarta,
-      motivo
+      motivo,
+      fecEntrega
     );
     const letters = await this.repository.saveLetter(idEmpleado, newLetter);
     if (letters.affectedRows === 0) {
