@@ -57,35 +57,6 @@ export class AuthService {
   }
 
   public async verifyCapCode(req: any, res: any): Promise<IResponse> {
-    // //falta guardar la token en la bd
-    // const capCode = await UsersUtils.generateCapCode();
-    // const tokenInfo = {
-    //   idToken: uuid(),
-    //   idUsuario: idUsuario,
-    //   token: token,
-    //   codigoCap: capCode,
-    //   fechaCreacion: new Date().toDateString(),
-    // };
-    // const sessionInfo = {
-    //   newId: uuid(),
-    //   userId: idUsuario,
-    //   timestamp: new Date(),
-    //   ip: IpUtils.getIp(req),
-    //   idToken: tokenInfo.idToken,
-    // };
-    // const saveTokenResponse = await this.repository.saveToken(tokenInfo);
-
-    // if (saveTokenResponse.affectedRows === 0 || !saveTokenResponse) {
-    //   return ServerResponse.Error();
-    // }
-    // const saveSessionResponse = await this.repository.saveSession(sessionInfo);
-    // if (saveSessionResponse.affectedRows === 0 || !saveSessionResponse) {
-    //   ServerResponse.Error();
-    // }
-
-    // //'el token se debe generar post login, una vez confirmado el codigo cap, se debe enviar el token'
-    // ServerResponse.generateCookie(res, token);
-
     //Se recibe el codigo
     const { codigo } = req.body;
     // const token: string = req.cookies['cookie-token']; //Se recibe el token
