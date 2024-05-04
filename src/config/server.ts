@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
 import express from 'express';
+
 import {
   authRouter,
   usersRouter,
@@ -28,11 +29,13 @@ export class Server {
 
   middlewares() {
     this.app.set('trust proxy', true);
-    this.app.use(cookieParser());
     this.app.use(
       cors({ origin: process.env.VITE_URL_FRONT, credentials: true })
     );
+    this.app.use(cookieParser());
     this.app.use(express.json());
+
+    // Luego, configuramos tus rutas y controladores
     this.app.use(authRouter);
     this.app.use(usersRouter);
     this.app.use(employeeRouter);
@@ -44,7 +47,7 @@ export class Server {
 
   listen() {
     this.app.listen(this.port, () => {
-      console.log(`servidor ejecutandose en: ${process.env.VITE_URL_FRONT}`);
+      console.log(`servidor ejecutandose en puerto: ` + this.port);
     });
   }
 }
